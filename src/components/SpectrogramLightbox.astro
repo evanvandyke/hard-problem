@@ -1,0 +1,198 @@
+---
+---
+
+<div class="spec-lb" data-spec-lightbox aria-hidden="true" role="dialog">
+  <button class="spec-lb-scrim" type="button" aria-label="Close spectrogram"></button>
+  <div class="spec-lb-panel">
+    <div class="spec-lb-head">
+      <span class="spec-lb-title"></span>
+      <button class="spec-lb-close" type="button" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            d="M6 6l12 12M18 6L6 18"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="spec-lb-image-wrap">
+      <img class="spec-lb-img" alt="" />
+    </div>
+    <div class="spec-lb-foot">FULL-RESOLUTION SPECTROGRAM · CLICK BACKGROUND OR PRESS ESC TO CLOSE</div>
+  </div>
+</div>
+
+<style>
+  .spec-lb {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .spec-lb.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .spec-lb-scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 5, 8, 0.92);
+    backdrop-filter: blur(8px);
+    border: none;
+    cursor: zoom-out;
+  }
+
+  .spec-lb-panel {
+    position: relative;
+    max-width: min(1400px, 96vw);
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(199, 75, 143, 0.25);
+    border-radius: 6px;
+    background: var(--near-black);
+    box-shadow: 0 40px 100px -30px rgba(0, 0, 0, 0.9);
+    transform: scale(0.96);
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.15, 1);
+  }
+
+  .spec-lb.is-open .spec-lb-panel {
+    transform: scale(1);
+  }
+
+  .spec-lb-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid rgba(107, 63, 160, 0.18);
+    font-family: var(--mono);
+  }
+
+  .spec-lb-title {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .spec-lb-close {
+    background: transparent;
+    border: 1px solid rgba(199, 75, 143, 0.3);
+    color: var(--cream);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .spec-lb-close:hover {
+    border-color: var(--magenta);
+    color: var(--magenta);
+  }
+
+  .spec-lb-image-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--black);
+    padding: 1rem;
+    overflow: auto;
+  }
+
+  .spec-lb-img {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
+
+  .spec-lb-foot {
+    padding: 0.6rem 1.1rem;
+    border-top: 1px solid rgba(107, 63, 160, 0.18);
+    font-family: var(--mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.25em;
+    color: rgba(228, 224, 212, 0.35);
+    text-align: center;
+  }
+</style>
+
+<script>
+  type LightboxState = {
+    root: HTMLElement;
+    img: HTMLImageElement;
+    title: HTMLElement;
+    open: boolean;
+  };
+
+  function wire() {
+    const root = document.querySelector<HTMLElement>('[data-spec-lightbox]');
+    if (!root) return;
+
+    const img = root.querySelector<HTMLImageElement>('.spec-lb-img');
+    const title = root.querySelector<HTMLElement>('.spec-lb-title');
+    const close = root.querySelector<HTMLElement>('.spec-lb-close');
+    const scrim = root.querySelector<HTMLElement>('.spec-lb-scrim');
+
+    if (!img || !title || !close || !scrim) return;
+
+    const state: LightboxState = { root, img, title, open: false };
+
+    function open(src: string, alt: string, t: string) {
+      state.img.src = src;
+      state.img.alt = alt;
+      state.title.textContent = t;
+      state.root.classList.add('is-open');
+      state.root.setAttribute('aria-hidden', 'false');
+      state.open = true;
+      document.body.style.overflow = 'hidden';
+    }
+
+    function doClose() {
+      state.root.classList.remove('is-open');
+      state.root.setAttribute('aria-hidden', 'true');
+      state.open = false;
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement | null;
+      const trigger = target?.closest<HTMLElement>('[data-spec-trigger]');
+      if (!trigger) return;
+      e.preventDefault();
+      const src = trigger.dataset.specSrc ?? '';
+      const alt = trigger.dataset.specAlt ?? '';
+      const t = trigger.dataset.specTitle ?? '';
+      open(src, alt, t);
+    });
+
+    close.addEventListener('click', doClose);
+    scrim.addEventListener('click', doClose);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && state.open) doClose();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wire);
+  } else {
+    wire();
+  }
+</script>

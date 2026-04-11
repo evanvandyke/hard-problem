@@ -1,0 +1,64 @@
+---
+---
+
+<div class="section-divider"></div>
+<section class="origin">
+  <h2>Inside the Machine</h2>
+  <div class="origin-text">
+    <p>
+      This is the complete code that generates the kick drum in <em>Pattern Language</em>. Six lines of math that
+      produce a sound you feel in your chest.
+    </p>
+  </div>
+
+  <pre class="code-block"><span class="kw">def</span> <span class="fn">make_kick</span>():
+    n = <span class="bi">int</span>(SR * <span class="num">0.4</span>)                <span class="cm"># 0.4 seconds of audio</span>
+    t = np.arange(n) / SR              <span class="cm"># time array</span>
+
+    <span class="cm"># Sine wave that sweeps from 150Hz to 35Hz</span>
+    freq = <span class="num">150</span> * np.exp(-t * <span class="num">18</span>) + <span class="num">35</span>
+    sub = np.sin(<span class="num">2</span> * np.pi * np.cumsum(freq) / SR)
+
+    <span class="cm"># Amplitude dies exponentially</span>
+    sub *= np.exp(-t * <span class="num">8</span>)
+
+    <span class="cm"># Tiny burst of noise for the click transient</span>
+    click = np.zeros(n)
+    click[:<span class="num">132</span>] = np.random.randn(<span class="num">132</span>) * np.exp(
+        -np.arange(<span class="num">132</span>) / (SR * <span class="num">0.0008</span>)
+    ) * <span class="num">0.2</span>
+
+    <span class="kw">return</span> normalize(sub + click)      <span class="cm"># that's a kick drum</span></pre>
+
+  <div class="origin-text">
+    <p>
+      The <code class="inline">humanize()</code> function from <em>Hard Problem</em> — the single parameter that
+      transforms the entire song from machine to human:
+    </p>
+  </div>
+
+  <pre class="code-block"><span class="kw">def</span> <span class="fn">humanize</span>(bar_num):
+    <span class="st">"""Returns 0.0 (perfect machine) to 1.0 (fully human)"""</span>
+    <span class="kw">return</span> <span class="bi">min</span>(<span class="num">1.0</span>, bar_num / (total_bars * <span class="num">0.85</span>))
+
+<span class="kw">def</span> <span class="fn">human_timing</span>(bar_num, max_drift_ms=<span class="num">25</span>):
+    <span class="st">"""Timing offset that increases with humanization"""</span>
+    h = humanize(bar_num)
+    drift = <span class="bi">int</span>(SR * max_drift_ms / <span class="num">1000</span> * h)
+    <span class="kw">return</span> np.random.randint(-drift, drift + <span class="num">1</span>) <span class="kw">if</span> drift &gt; <span class="num">0</span> <span class="kw">else</span> <span class="num">0</span>
+
+<span class="kw">def</span> <span class="fn">human_velocity</span>(bar_num, base=<span class="num">1.0</span>, variation=<span class="num">0.3</span>):
+    <span class="st">"""Velocity variation that increases with humanization"""</span>
+    h = humanize(bar_num)
+    <span class="kw">return</span> <span class="bi">max</span>(<span class="num">0.1</span>, base + np.random.uniform(-variation*h, variation*h))
+
+<span class="kw">def</span> <span class="fn">human_pitch</span>(bar_num, freq, max_cents=<span class="num">15</span>):
+    <span class="st">"""Pitch wobble that increases with humanization"""</span>
+    h = humanize(bar_num)
+    cents = np.random.uniform(-max_cents * h, max_cents * h)
+    <span class="kw">return</span> freq * (<span class="num">2</span> ** (cents / <span class="num">1200</span>))
+
+<span class="cm"># At bar 1:  timing ±0ms, velocity ±0%, pitch ±0 cents</span>
+<span class="cm"># At bar 48: timing ±25ms, velocity ±30%, pitch ±15 cents</span>
+<span class="cm"># The math learns to breathe.</span></pre>
+</section>

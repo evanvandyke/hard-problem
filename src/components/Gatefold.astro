@@ -1,0 +1,159 @@
+---
+---
+
+<section class="gatefold" aria-label="Album gatefold artwork">
+  <div class="gatefold-eyebrow">THE GATEFOLD</div>
+  <div class="gatefold-panels">
+    <a
+      class="gatefold-panel gatefold-panel--left"
+      href="/media/artwork/inner-left.jpg"
+      target="_blank"
+      rel="noopener"
+      aria-label="Inner left panel — track listing — open full size"
+    >
+      <img
+        src="/media/artwork/inner-left-1600.jpg"
+        alt="Inner left panel featuring the track listing and credits"
+        width="1600"
+        height="1600"
+        loading="lazy"
+      />
+      <span class="gatefold-label">LEFT · TRACK LISTING</span>
+    </a>
+    <a
+      class="gatefold-panel gatefold-panel--right"
+      href="/media/artwork/inner-right.jpg"
+      target="_blank"
+      rel="noopener"
+      aria-label="Inner right panel — manifesto — open full size"
+    >
+      <img
+        src="/media/artwork/inner-right-1600.jpg"
+        alt="Inner right panel featuring the constructive interference manifesto"
+        width="1600"
+        height="1600"
+        loading="lazy"
+      />
+      <span class="gatefold-label">RIGHT · THE MANIFESTO</span>
+    </a>
+  </div>
+  <p class="gatefold-caption">
+    Click either panel to open at full resolution.
+  </p>
+</section>
+
+<style>
+  .gatefold {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 6rem 2rem 4rem;
+    text-align: center;
+  }
+
+  .gatefold-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 2.5rem;
+  }
+
+  .gatefold-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    max-width: 1300px;
+    margin: 0 auto;
+    perspective: 1500px;
+  }
+
+  .gatefold-panel {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1;
+    border-radius: 4px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow:
+      0 20px 50px -18px rgba(0, 0, 0, 0.7),
+      0 0 0 1px rgba(107, 63, 160, 0.25);
+    transition:
+      transform 0.5s cubic-bezier(0.2, 0.7, 0.15, 1),
+      box-shadow 0.4s ease;
+    transform-style: preserve-3d;
+  }
+
+  .gatefold-panel--left {
+    transform-origin: right center;
+  }
+
+  .gatefold-panel--right {
+    transform-origin: left center;
+  }
+
+  .gatefold-panel:hover {
+    box-shadow:
+      0 30px 70px -18px rgba(0, 0, 0, 0.8),
+      0 0 0 1px rgba(199, 75, 143, 0.45),
+      0 0 40px -8px rgba(199, 75, 143, 0.35);
+  }
+
+  .gatefold-panel--left:hover {
+    transform: rotateY(-4deg) translateX(-4px);
+  }
+
+  .gatefold-panel--right:hover {
+    transform: rotateY(4deg) translateX(4px);
+  }
+
+  .gatefold-panel img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .gatefold-label {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    color: rgba(240, 192, 64, 0.9);
+    background: rgba(10, 10, 12, 0.55);
+    backdrop-filter: blur(6px);
+    padding: 0.4rem 0.7rem;
+    border-radius: 2px;
+    border: 1px solid rgba(240, 192, 64, 0.25);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .gatefold-panel:hover .gatefold-label {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .gatefold-caption {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(228, 224, 212, 0.35);
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 720px) {
+    .gatefold-panels {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .gatefold-panel:hover {
+      transform: none;
+    }
+  }
+</style>

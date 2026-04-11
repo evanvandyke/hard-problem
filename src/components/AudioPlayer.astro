@@ -1,0 +1,470 @@
+---
+interface Props {
+  src: string;
+  label?: string;
+  /** Optional seed tint for the spectrum bars in degrees of hue rotation */
+  hueShift?: number;
+}
+
+const { src, label = 'audio', hueShift = 0 } = Astro.props;
+---
+
+<div class="hp-player" data-hp-player data-hue={hueShift}>
+  <button class="hp-play" aria-label={`Play ${label}`} type="button">
+    <svg class="icon icon-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path fill="currentColor" d="M7 5.5v13c0 .8.9 1.3 1.6.9l10.2-6.5c.6-.4.6-1.3 0-1.7L8.6 4.6C7.9 4.2 7 4.7 7 5.5z" />
+    </svg>
+    <svg class="icon icon-pause" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" />
+      <rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" />
+    </svg>
+  </button>
+
+  <div class="hp-vis-wrap">
+    <canvas class="hp-vis" width="720" height="72"></canvas>
+    <div class="hp-scrub" role="slider" aria-label="Seek" tabindex="0">
+      <div class="hp-scrub-fill"></div>
+      <div class="hp-scrub-head"></div>
+    </div>
+  </div>
+
+  <span class="hp-time"><span class="hp-time-cur">0:00</span> / <span class="hp-time-dur">0:00</span></span>
+
+  <audio preload="metadata" crossorigin="anonymous" src={src} data-title={label}></audio>
+</div>
+
+<style>
+  .hp-player {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 1.1rem;
+    background: rgba(17, 17, 21, 0.6);
+    border: 1px solid rgba(107, 63, 160, 0.25);
+    border-radius: 6px;
+    max-width: 720px;
+    margin: 1rem 0 1.5rem;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s ease;
+  }
+
+  .hp-player:hover,
+  .hp-player.is-playing {
+    border-color: rgba(199, 75, 143, 0.45);
+  }
+
+  .hp-play {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(199, 75, 143, 0.5);
+    background: radial-gradient(circle at 30% 30%, rgba(199, 75, 143, 0.15), transparent 70%);
+    color: var(--cream);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition:
+      transform 0.15s ease,
+      background 0.25s ease,
+      border-color 0.25s ease;
+  }
+
+  .hp-play:hover {
+    transform: scale(1.06);
+    background: radial-gradient(circle at 30% 30%, rgba(199, 75, 143, 0.3), transparent 70%);
+    border-color: var(--magenta);
+  }
+
+  .hp-play:active {
+    transform: scale(0.97);
+  }
+
+  .hp-play .icon {
+    color: var(--cream);
+    transition: color 0.2s ease;
+  }
+
+  .hp-play .icon-pause {
+    display: none;
+  }
+
+  .hp-player.is-playing .hp-play .icon-play {
+    display: none;
+  }
+
+  .hp-player.is-playing .hp-play .icon-pause {
+    display: block;
+  }
+
+  .hp-player.is-playing .hp-play .icon {
+    color: var(--magenta);
+  }
+
+  .hp-vis-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    position: relative;
+  }
+
+  .hp-vis {
+    width: 100%;
+    height: 72px;
+    display: block;
+    border-radius: 2px;
+    image-rendering: crisp-edges;
+  }
+
+  .hp-scrub {
+    position: relative;
+    height: 6px;
+    margin-top: 6px;
+    background: rgba(107, 63, 160, 0.15);
+    border-radius: 3px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .hp-scrub:focus-visible {
+    box-shadow: 0 0 0 2px rgba(199, 75, 143, 0.4);
+  }
+
+  .hp-scrub-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0;
+    background: linear-gradient(90deg, var(--purple), var(--magenta), var(--orange));
+    border-radius: 3px;
+    pointer-events: none;
+  }
+
+  .hp-scrub-head {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(240, 192, 64, 0.6);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .hp-player:hover .hp-scrub-head,
+  .hp-player.is-playing .hp-scrub-head {
+    opacity: 1;
+  }
+
+  .hp-time {
+    flex-shrink: 0;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: rgba(228, 224, 212, 0.5);
+    font-variant-numeric: tabular-nums;
+    min-width: 5.5em;
+    text-align: right;
+  }
+
+  .hp-player audio {
+    display: none;
+  }
+
+  @media (max-width: 560px) {
+    .hp-player {
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .hp-vis-wrap {
+      flex: 1 1 100%;
+      order: 3;
+    }
+    .hp-time {
+      text-align: left;
+    }
+  }
+</style>
+
+<script>
+  type PlayerState = {
+    root: HTMLElement;
+    audio: HTMLAudioElement;
+    canvas: HTMLCanvasElement;
+    ctx2d: CanvasRenderingContext2D;
+    playBtn: HTMLButtonElement;
+    scrub: HTMLElement;
+    fill: HTMLElement;
+    head: HTMLElement;
+    timeCur: HTMLElement;
+    timeDur: HTMLElement;
+    hueShift: number;
+    analyser: AnalyserNode | null;
+    dataArray: Uint8Array<ArrayBuffer> | null;
+    audioCtx: AudioContext | null;
+    source: MediaElementAudioSourceNode | null;
+    rafId: number | null;
+    wired: boolean;
+  };
+
+  const FFT_SIZE = 512;
+  const BAR_COUNT = 64;
+
+  const players: PlayerState[] = [];
+
+  function fmtTime(seconds: number): string {
+    if (!Number.isFinite(seconds)) return '0:00';
+    const s = Math.max(0, Math.floor(seconds));
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return `${m}:${r.toString().padStart(2, '0')}`;
+  }
+
+  function ensureAudioGraph(state: PlayerState): void {
+    if (state.wired) return;
+    const AudioCtx =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    state.audioCtx = new AudioCtx();
+    state.source = state.audioCtx.createMediaElementSource(state.audio);
+    state.analyser = state.audioCtx.createAnalyser();
+    state.analyser.fftSize = FFT_SIZE;
+    state.analyser.smoothingTimeConstant = 0.82;
+    state.dataArray = new Uint8Array(new ArrayBuffer(state.analyser.frequencyBinCount));
+    state.source.connect(state.analyser);
+    state.analyser.connect(state.audioCtx.destination);
+    state.wired = true;
+  }
+
+  function resizeCanvas(state: PlayerState): void {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = state.canvas.getBoundingClientRect();
+    const w = Math.max(1, Math.floor(rect.width * dpr));
+    const h = Math.max(1, Math.floor(rect.height * dpr));
+    if (state.canvas.width !== w || state.canvas.height !== h) {
+      state.canvas.width = w;
+      state.canvas.height = h;
+    }
+  }
+
+  function drawFrame(state: PlayerState): void {
+    const { ctx2d, canvas, analyser, dataArray, hueShift } = state;
+    if (!analyser || !dataArray) return;
+
+    resizeCanvas(state);
+    analyser.getByteFrequencyData(dataArray);
+
+    const w = canvas.width;
+    const h = canvas.height;
+
+    ctx2d.clearRect(0, 0, w, h);
+
+    // Background fade for persistence feel
+    ctx2d.fillStyle = 'rgba(10, 10, 12, 0.85)';
+    ctx2d.fillRect(0, 0, w, h);
+
+    const bins = dataArray.length;
+    const binStep = Math.max(1, Math.floor(bins / BAR_COUNT));
+    const gap = Math.max(1, Math.floor(w / BAR_COUNT / 6));
+    const barW = Math.max(1, Math.floor(w / BAR_COUNT) - gap);
+
+    for (let i = 0; i < BAR_COUNT; i++) {
+      // Use a log-ish mapping so bass doesn't dominate visually
+      const t = i / BAR_COUNT;
+      const srcIdx = Math.min(
+        bins - 1,
+        Math.floor(Math.pow(t, 1.6) * bins),
+      );
+      let peak = 0;
+      for (let k = 0; k < binStep; k++) {
+        const v = dataArray[Math.min(bins - 1, srcIdx + k)] ?? 0;
+        if (v > peak) peak = v;
+      }
+      const amp = peak / 255;
+      const barH = Math.max(2, Math.floor(amp * h));
+
+      // Color ramp: purple → magenta → red → orange, with optional hue shift per track
+      const hue = (260 + t * 140 + hueShift) % 360;
+      const light = 45 + amp * 25;
+      const alpha = 0.35 + amp * 0.65;
+      ctx2d.fillStyle = `hsla(${hue}, 72%, ${light}%, ${alpha})`;
+
+      const x = Math.floor(i * (barW + gap));
+      const y = h - barH;
+      ctx2d.fillRect(x, y, barW, barH);
+
+      // Tiny peak cap
+      if (amp > 0.05) {
+        ctx2d.fillStyle = `hsla(${hue}, 85%, ${Math.min(85, light + 20)}%, ${Math.min(1, alpha + 0.15)})`;
+        ctx2d.fillRect(x, y, barW, Math.max(1, Math.floor(h * 0.02)));
+      }
+    }
+
+    state.rafId = requestAnimationFrame(() => drawFrame(state));
+  }
+
+  function drawIdle(state: PlayerState): void {
+    resizeCanvas(state);
+    const { ctx2d, canvas, hueShift } = state;
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx2d.clearRect(0, 0, w, h);
+    ctx2d.fillStyle = 'rgba(10, 10, 12, 0.6)';
+    ctx2d.fillRect(0, 0, w, h);
+
+    // A dormant gradient line — "the math is waiting"
+    for (let i = 0; i < BAR_COUNT; i++) {
+      const t = i / BAR_COUNT;
+      const hue = (260 + t * 140 + hueShift) % 360;
+      const x = Math.floor((i / BAR_COUNT) * w);
+      const barW = Math.max(1, Math.floor(w / BAR_COUNT) - 2);
+      ctx2d.fillStyle = `hsla(${hue}, 50%, 40%, 0.25)`;
+      ctx2d.fillRect(x, h - 3, barW, 2);
+    }
+  }
+
+  function stopAnimation(state: PlayerState): void {
+    if (state.rafId !== null) {
+      cancelAnimationFrame(state.rafId);
+      state.rafId = null;
+    }
+  }
+
+  function updateProgress(state: PlayerState): void {
+    const { audio, fill, head, timeCur, timeDur } = state;
+    const dur = audio.duration || 0;
+    const cur = audio.currentTime || 0;
+    const pct = dur > 0 ? (cur / dur) * 100 : 0;
+    fill.style.width = `${pct}%`;
+    head.style.left = `${pct}%`;
+    timeCur.textContent = fmtTime(cur);
+    timeDur.textContent = fmtTime(dur);
+  }
+
+  function wirePlayer(root: HTMLElement): void {
+    const audio = root.querySelector('audio') as HTMLAudioElement | null;
+    const canvas = root.querySelector('.hp-vis') as HTMLCanvasElement | null;
+    const playBtn = root.querySelector('.hp-play') as HTMLButtonElement | null;
+    const scrub = root.querySelector('.hp-scrub') as HTMLElement | null;
+    const fill = root.querySelector('.hp-scrub-fill') as HTMLElement | null;
+    const head = root.querySelector('.hp-scrub-head') as HTMLElement | null;
+    const timeCur = root.querySelector('.hp-time-cur') as HTMLElement | null;
+    const timeDur = root.querySelector('.hp-time-dur') as HTMLElement | null;
+
+    if (!audio || !canvas || !playBtn || !scrub || !fill || !head || !timeCur || !timeDur) return;
+
+    const ctx2d = canvas.getContext('2d');
+    if (!ctx2d) return;
+
+    const hueShift = Number.parseFloat(root.dataset.hue ?? '0') || 0;
+
+    const state: PlayerState = {
+      root,
+      audio,
+      canvas,
+      ctx2d,
+      playBtn,
+      scrub,
+      fill,
+      head,
+      timeCur,
+      timeDur,
+      hueShift,
+      analyser: null,
+      dataArray: null,
+      audioCtx: null,
+      source: null,
+      rafId: null,
+      wired: false,
+    };
+    players.push(state);
+
+    drawIdle(state);
+
+    playBtn.addEventListener('click', async () => {
+      if (audio.paused) {
+        // Pause every other audio element (including non-bar ones like stems)
+        document.querySelectorAll<HTMLAudioElement>('audio').forEach((a) => {
+          if (a !== audio && !a.paused) a.pause();
+        });
+        // Ask any running tool (humanize slider, stem crossfader) to stop
+        document.dispatchEvent(new CustomEvent('hp:stop-all'));
+        ensureAudioGraph(state);
+        if (state.audioCtx?.state === 'suspended') {
+          await state.audioCtx.resume();
+        }
+        try {
+          await audio.play();
+        } catch {
+          return;
+        }
+      } else {
+        audio.pause();
+      }
+    });
+
+    audio.addEventListener('play', () => {
+      root.classList.add('is-playing');
+      stopAnimation(state);
+      state.rafId = requestAnimationFrame(() => drawFrame(state));
+    });
+
+    audio.addEventListener('pause', () => {
+      root.classList.remove('is-playing');
+      stopAnimation(state);
+      drawIdle(state);
+    });
+
+    audio.addEventListener('ended', () => {
+      root.classList.remove('is-playing');
+      stopAnimation(state);
+      drawIdle(state);
+    });
+
+    audio.addEventListener('timeupdate', () => updateProgress(state));
+    audio.addEventListener('loadedmetadata', () => updateProgress(state));
+
+    const seek = (clientX: number) => {
+      const rect = scrub.getBoundingClientRect();
+      const pct = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+      if (Number.isFinite(audio.duration)) {
+        audio.currentTime = pct * audio.duration;
+      }
+    };
+
+    scrub.addEventListener('pointerdown', (e) => {
+      (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+      seek(e.clientX);
+      const move = (ev: PointerEvent) => seek(ev.clientX);
+      const up = () => {
+        scrub.removeEventListener('pointermove', move);
+        scrub.removeEventListener('pointerup', up);
+      };
+      scrub.addEventListener('pointermove', move);
+      scrub.addEventListener('pointerup', up);
+    });
+
+    scrub.addEventListener('keydown', (e) => {
+      if (!Number.isFinite(audio.duration)) return;
+      if (e.key === 'ArrowLeft') audio.currentTime = Math.max(0, audio.currentTime - 5);
+      else if (e.key === 'ArrowRight') audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+    });
+
+    const ro = new ResizeObserver(() => {
+      if (audio.paused) drawIdle(state);
+    });
+    ro.observe(canvas);
+  }
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-hp-player]').forEach(wirePlayer);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>

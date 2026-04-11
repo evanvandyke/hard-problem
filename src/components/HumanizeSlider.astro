@@ -1,0 +1,933 @@
+---
+---
+
+<div class="humanize" data-humanize>
+  <div class="humanize-head">
+    <div class="humanize-label">
+      <span class="humanize-eyebrow">INTERACTIVE · TRACK 03</span>
+      <h3>Slide the <code>humanize()</code> function</h3>
+      <p>
+        A single parameter, 0.0 to 1.0, drives the entire groove. At zero, a rigid grid. At one, the math learns to
+        breathe. Drag the slider to re-render the pattern in real time — the drums and melody below are synthesized in
+        your browser with the jitter actually applied to timing, velocity, and pitch.
+      </p>
+    </div>
+  </div>
+
+  <div class="humanize-grid-wrap">
+    <svg class="humanize-grid" viewBox="0 0 640 220" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <g class="grid-rows">
+        <line x1="0" y1="40" x2="640" y2="40" />
+        <line x1="0" y1="90" x2="640" y2="90" />
+        <line x1="0" y1="140" x2="640" y2="140" />
+        <line x1="0" y1="190" x2="640" y2="190" />
+      </g>
+      <g class="grid-cols"></g>
+      <g class="row-labels">
+        <text x="6" y="36">KICK</text>
+        <text x="6" y="86">SNARE</text>
+        <text x="6" y="136">HAT</text>
+        <text x="6" y="186">MEL</text>
+      </g>
+      <g class="playhead">
+        <line x1="0" y1="12" x2="0" y2="210" />
+      </g>
+      <g class="notes"></g>
+      <g class="ghost-notes"></g>
+    </svg>
+  </div>
+
+  <div class="humanize-controls">
+    <button class="humanize-play" type="button" aria-label="Play humanized loop">
+      <svg class="icon icon-play" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <path fill="currentColor" d="M7 5.5v13c0 .8.9 1.3 1.6.9l10.2-6.5c.6-.4.6-1.3 0-1.7L8.6 4.6C7.9 4.2 7 4.7 7 5.5z" />
+      </svg>
+      <svg class="icon icon-stop" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <rect x="6" y="6" width="12" height="12" rx="1" fill="currentColor" />
+      </svg>
+    </button>
+
+    <input class="humanize-range" type="range" min="0" max="1" step="0.001" value="0" aria-label="Humanize amount" />
+
+    <div class="humanize-readout">
+      <div class="h-value"><span>h =</span> <span class="h-num">0.00</span></div>
+      <div class="h-stage">MACHINE</div>
+    </div>
+  </div>
+
+  <div class="humanize-stats">
+    <div><span class="stat-k">TIMING</span> <span class="stat-v" data-stat="timing">±0 ms</span></div>
+    <div><span class="stat-k">VELOCITY</span> <span class="stat-v" data-stat="velocity">±0 %</span></div>
+    <div><span class="stat-k">PITCH</span> <span class="stat-v" data-stat="pitch">±0 cents</span></div>
+    <div><span class="stat-k">GHOSTS</span> <span class="stat-v" data-stat="ghosts">0</span></div>
+  </div>
+</div>
+
+<style>
+  .humanize {
+    max-width: 720px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: linear-gradient(180deg, rgba(17, 17, 21, 0.8) 0%, rgba(10, 10, 12, 0.6) 100%);
+    border: 1px solid rgba(107, 63, 160, 0.3);
+    border-radius: 6px;
+  }
+
+  .humanize-head {
+    margin-bottom: 1.5rem;
+  }
+
+  .humanize-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--magenta);
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+
+  .humanize-head h3 {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--white);
+    margin-bottom: 0.8rem;
+  }
+
+  .humanize-head h3 code {
+    font-family: var(--mono);
+    font-size: 0.75em;
+    color: var(--orange);
+    font-style: normal;
+  }
+
+  .humanize-head p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: rgba(228, 224, 212, 0.7);
+    max-width: 580px;
+  }
+
+  .humanize-grid-wrap {
+    background: rgba(10, 10, 12, 0.6);
+    border: 1px solid rgba(107, 63, 160, 0.15);
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .humanize-grid {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .humanize-grid .grid-rows line {
+    stroke: rgba(107, 63, 160, 0.18);
+    stroke-width: 1;
+  }
+
+  .humanize-grid .grid-cols line {
+    stroke: rgba(107, 63, 160, 0.08);
+    stroke-width: 1;
+  }
+
+  .humanize-grid .row-labels text {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    fill: rgba(228, 224, 212, 0.35);
+  }
+
+  .humanize-grid .playhead line {
+    stroke: var(--gold);
+    stroke-width: 1.2;
+    opacity: 0;
+    filter: drop-shadow(0 0 6px rgba(240, 192, 64, 0.6));
+  }
+
+  .humanize.is-playing .playhead line {
+    opacity: 0.8;
+  }
+
+  .humanize-grid .note {
+    transition: opacity 0.15s ease;
+  }
+
+  .humanize-grid .note.kick {
+    fill: var(--orange);
+  }
+  .humanize-grid .note.snare {
+    fill: var(--magenta);
+  }
+  .humanize-grid .note.hat {
+    fill: var(--purple);
+  }
+  .humanize-grid .note.mel {
+    fill: var(--gold);
+  }
+
+  .humanize-grid .note.flash {
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+
+  .humanize-grid .ghost {
+    fill: var(--cream);
+    opacity: 0.18;
+  }
+
+  .humanize-controls {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.25rem;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .humanize-play {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(199, 75, 143, 0.5);
+    background: radial-gradient(circle at 30% 30%, rgba(199, 75, 143, 0.15), transparent 70%);
+    color: var(--cream);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: transform 0.15s ease, background 0.25s ease, border-color 0.25s ease;
+  }
+
+  .humanize-play:hover {
+    transform: scale(1.06);
+    background: radial-gradient(circle at 30% 30%, rgba(199, 75, 143, 0.3), transparent 70%);
+    border-color: var(--magenta);
+  }
+
+  .humanize-play .icon-stop {
+    display: none;
+  }
+
+  .humanize.is-playing .humanize-play .icon-play {
+    display: none;
+  }
+
+  .humanize.is-playing .humanize-play .icon-stop {
+    display: block;
+    color: var(--magenta);
+  }
+
+  .humanize-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--purple-deep) 0%, var(--purple) 25%, var(--magenta) 55%, var(--orange) 85%, var(--gold) 100%);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .humanize-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 12px rgba(240, 192, 64, 0.5);
+    cursor: grab;
+    transition: transform 0.12s ease;
+  }
+
+  .humanize-range::-webkit-slider-thumb:active {
+    transform: scale(1.15);
+    cursor: grabbing;
+  }
+
+  .humanize-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 12px rgba(240, 192, 64, 0.5);
+    cursor: grab;
+  }
+
+  .humanize-readout {
+    text-align: right;
+    font-family: var(--mono);
+    min-width: 8.5em;
+  }
+
+  .humanize-readout .h-value {
+    font-size: 0.75rem;
+    color: var(--cream);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .humanize-readout .h-value span:first-child {
+    color: rgba(228, 224, 212, 0.4);
+  }
+
+  .humanize-readout .h-stage {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--magenta);
+    margin-top: 0.4rem;
+    min-height: 1em;
+  }
+
+  .humanize-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(107, 63, 160, 0.15);
+    font-family: var(--mono);
+  }
+
+  .humanize-stats > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .stat-k {
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    color: rgba(228, 224, 212, 0.35);
+  }
+
+  .stat-v {
+    font-size: 0.72rem;
+    color: var(--cream);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 560px) {
+    .humanize-controls {
+      grid-template-columns: 1fr;
+    }
+    .humanize-readout {
+      text-align: left;
+    }
+    .humanize-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
+
+<script>
+  // ─── Pattern definition ─────────────────────────────────────────────
+  // 16 steps, 1 bar at 96 BPM (matches Hard Problem)
+  // Rows: 0=kick, 1=snare, 2=hat, 3=mel
+  type Hit = { step: number; row: number; note?: number /* semitones from A4 */ };
+
+  const BPM = 96;
+  const STEPS = 16;
+  const ROW_Y = [40, 90, 140, 190];
+  const ROW_CLASS = ['kick', 'snare', 'hat', 'mel'];
+  const ROW_FILL = ['#e8833a', '#c74b8f', '#6b3fa0', '#f0c040']; // orange, magenta, purple, gold
+  const GHOST_FILL = '#e8e0d4';
+  const LABEL_COL_X = 50; // pixels where note area begins
+  const GRID_W = 640;
+  const NOTE_AREA_W = GRID_W - LABEL_COL_X - 10;
+
+  // D minor descending motif (Hard Problem is in D minor)
+  const melSemiFromA4 = {
+    D4: -7,
+    F4: -4,
+    A4: 0,
+    D5: 5,
+    A3: -12,
+  } as const;
+
+  const PATTERN: Hit[] = [
+    // kicks
+    { step: 0, row: 0 },
+    { step: 8, row: 0 },
+    { step: 10, row: 0 },
+    // snare
+    { step: 4, row: 1 },
+    { step: 12, row: 1 },
+    // hats every other step
+    ...Array.from({ length: 8 }, (_, i) => ({ step: i * 2, row: 2 })),
+    // melody: D4 F4 A4 D5 A4 F4 D4 A3 — 8 notes, every even step
+    { step: 0, row: 3, note: melSemiFromA4.D4 },
+    { step: 2, row: 3, note: melSemiFromA4.F4 },
+    { step: 4, row: 3, note: melSemiFromA4.A4 },
+    { step: 6, row: 3, note: melSemiFromA4.D5 },
+    { step: 8, row: 3, note: melSemiFromA4.A4 },
+    { step: 10, row: 3, note: melSemiFromA4.F4 },
+    { step: 12, row: 3, note: melSemiFromA4.D4 },
+    { step: 14, row: 3, note: melSemiFromA4.A3 },
+  ];
+
+  const GHOST_CANDIDATES: Hit[] = [
+    { step: 3, row: 2 },
+    { step: 7, row: 2 },
+    { step: 11, row: 2 },
+    { step: 13, row: 0 }, // ghost kick
+    { step: 5, row: 1 }, // ghost snare
+    { step: 9, row: 3, note: melSemiFromA4.D4 },
+    { step: 15, row: 3, note: melSemiFromA4.F4 },
+  ];
+
+  const MAX_DRIFT_MS = 90;
+  const MAX_VEL = 0.55;
+  const MAX_CENTS = 45;
+
+  // Deterministic pseudo-random from two ints
+  function mulberry32(seed: number) {
+    return () => {
+      let t = (seed += 0x6d2b79f5);
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function stageFor(h: number): string {
+    if (h < 0.001) return 'MACHINE';
+    if (h < 0.25) return 'WAKING';
+    if (h < 0.5) return 'FEELING';
+    if (h < 0.8) return 'ALIVE';
+    return 'TRANSCEND';
+  }
+
+  function stepSeconds(): number {
+    // 16 steps per bar, 4 beats per bar, so 16 = 1/16 note @ BPM
+    // seconds per 1/16 note = 60 / BPM / 4
+    return 60 / BPM / 4;
+  }
+
+  // Frequency for semitones offset from A4 (440 Hz)
+  function freqOfSemi(semiFromA4: number): number {
+    return 440 * Math.pow(2, semiFromA4 / 12);
+  }
+
+  // ─── Rendering the grid ─────────────────────────────────────────────
+
+  type Rendered = {
+    hits: Array<Hit & { x: number; y: number; vel: number; cents: number; isGhost: boolean }>;
+  };
+
+  function stepToX(stepFloat: number): number {
+    const stepW = NOTE_AREA_W / STEPS;
+    return LABEL_COL_X + stepFloat * stepW + stepW / 2;
+  }
+
+  function computeRender(h: number): Rendered {
+    const rnd = mulberry32(Math.floor(h * 1_000_000) + 1);
+    const hits: Rendered['hits'] = [];
+
+    for (const hit of PATTERN) {
+      const driftSteps = (((rnd() * 2 - 1) * MAX_DRIFT_MS) / 1000 / stepSeconds()) * h;
+      const stepFloat = hit.step + driftSteps;
+      const cents = (rnd() * 2 - 1) * MAX_CENTS * h;
+      const vel = 1 + (rnd() * 2 - 1) * MAX_VEL * h;
+      const pitchWobblePx = hit.row === 3 ? (cents / MAX_CENTS) * 6 : 0;
+      hits.push({
+        ...hit,
+        x: stepToX(stepFloat),
+        y: ROW_Y[hit.row] - pitchWobblePx,
+        vel: Math.max(0.15, Math.min(1.4, vel)),
+        cents,
+        isGhost: false,
+      });
+    }
+
+    // Ghost notes appear starting at h > 0.4, fully at h > 0.8
+    const ghostThreshold = 0.4;
+    if (h > ghostThreshold) {
+      const ghostProb = Math.min(1, (h - ghostThreshold) / (0.9 - ghostThreshold));
+      for (const ghost of GHOST_CANDIDATES) {
+        if (rnd() < ghostProb) {
+          const driftSteps =
+            (((rnd() * 2 - 1) * MAX_DRIFT_MS) / 1000 / stepSeconds()) * h;
+          const stepFloat = ghost.step + driftSteps;
+          const cents = (rnd() * 2 - 1) * MAX_CENTS * h;
+          hits.push({
+            ...ghost,
+            x: stepToX(stepFloat),
+            y: ROW_Y[ghost.row],
+            vel: 0.35,
+            cents,
+            isGhost: true,
+          });
+        }
+      }
+    }
+
+    return { hits };
+  }
+
+  // ─── Audio ──────────────────────────────────────────────────────────
+
+  type EngineState = {
+    root: HTMLElement;
+    audioCtx: AudioContext | null;
+    isPlaying: boolean;
+    nextNoteTime: number;
+    currentStep: number;
+    scheduleAheadTime: number;
+    lookaheadMs: number;
+    timerId: number | null;
+    rendered: Rendered;
+    h: number;
+    svg: SVGSVGElement;
+    notesGroup: SVGGElement;
+    ghostsGroup: SVGGElement;
+    playhead: SVGLineElement;
+    hValueEl: HTMLElement;
+    stageEl: HTMLElement;
+    timingEl: HTMLElement;
+    velocityEl: HTMLElement;
+    pitchEl: HTMLElement;
+    ghostsEl: HTMLElement;
+    rangeEl: HTMLInputElement;
+    playBtn: HTMLButtonElement;
+    masterGain: GainNode | null;
+    wetBus: GainNode | null;
+    delayNode: DelayNode | null;
+    feedbackGain: GainNode | null;
+  };
+
+  function ensureAudio(state: EngineState): void {
+    if (state.audioCtx) return;
+    const AudioCtx =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    state.audioCtx = new AudioCtx();
+    state.masterGain = state.audioCtx.createGain();
+    state.masterGain.gain.value = 0.55;
+    state.masterGain.connect(state.audioCtx.destination);
+
+    // Echo bus for melodic voices — wet amount scales with h
+    const delay = state.audioCtx.createDelay(1.0);
+    delay.delayTime.value = 0.21;
+    const feedback = state.audioCtx.createGain();
+    feedback.gain.value = 0.38;
+    const wet = state.audioCtx.createGain();
+    wet.gain.value = 0;
+    delay.connect(feedback);
+    feedback.connect(delay);
+    delay.connect(wet);
+    wet.connect(state.masterGain);
+    state.delayNode = delay;
+    state.feedbackGain = feedback;
+    state.wetBus = wet;
+  }
+
+  function updateEchoWet(state: EngineState): void {
+    if (!state.wetBus || !state.audioCtx) return;
+    // No echo at h=0, up to ~0.35 wet at h=1
+    const target = Math.pow(state.h, 1.4) * 0.35;
+    state.wetBus.gain.setTargetAtTime(target, state.audioCtx.currentTime, 0.05);
+  }
+
+  function playKick(state: EngineState, time: number, vel: number): void {
+    const ctx = state.audioCtx!;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const h = state.h;
+    // Kick gets bigger and longer as h increases
+    const startF = 150 + h * 20;
+    const endF = 40 - h * 10;
+    const tail = 0.4 + h * 0.25;
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(startF, time);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(20, endF), time + 0.35 + h * 0.1);
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(vel * 0.92, time + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + tail);
+    osc.connect(gain);
+    gain.connect(state.masterGain!);
+    osc.start(time);
+    osc.stop(time + tail + 0.05);
+  }
+
+  function playSnare(state: EngineState, time: number, vel: number): void {
+    const ctx = state.audioCtx!;
+    const bufSize = Math.floor(ctx.sampleRate * 0.2);
+    const buffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.25));
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 1200;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(vel * 0.5, time + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.22);
+    noise.connect(hp);
+    hp.connect(gain);
+    gain.connect(state.masterGain!);
+    noise.start(time);
+    noise.stop(time + 0.25);
+
+    // Tonal body
+    const osc = ctx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(210, time);
+    const og = ctx.createGain();
+    og.gain.setValueAtTime(0.0001, time);
+    og.gain.exponentialRampToValueAtTime(vel * 0.25, time + 0.005);
+    og.gain.exponentialRampToValueAtTime(0.0001, time + 0.12);
+    osc.connect(og);
+    og.connect(state.masterGain!);
+    osc.start(time);
+    osc.stop(time + 0.14);
+  }
+
+  function playHat(state: EngineState, time: number, vel: number): void {
+    const ctx = state.audioCtx!;
+    const bufSize = Math.floor(ctx.sampleRate * 0.07);
+    const buffer = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.15));
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 6000;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(vel * 0.18, time + 0.002);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.08);
+    noise.connect(hp);
+    hp.connect(gain);
+    gain.connect(state.masterGain!);
+    noise.start(time);
+    noise.stop(time + 0.09);
+  }
+
+  function playMel(state: EngineState, time: number, vel: number, semiFromA4: number, cents: number): void {
+    const ctx = state.audioCtx!;
+    const h = state.h;
+    const baseFreq = freqOfSemi(semiFromA4) * Math.pow(2, cents / 1200);
+
+    // Primary FM voice
+    const carrier = ctx.createOscillator();
+    const mod = ctx.createOscillator();
+    const modGain = ctx.createGain();
+    carrier.type = 'sine';
+    mod.type = 'sine';
+    carrier.frequency.setValueAtTime(baseFreq, time);
+    mod.frequency.setValueAtTime(baseFreq * (2 + h * 0.5), time);
+    modGain.gain.setValueAtTime(baseFreq * (0.6 + h * 0.6), time);
+    mod.connect(modGain);
+    modGain.connect(carrier.frequency);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(vel * 0.22, time + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.4 + h * 0.2);
+    carrier.connect(gain);
+    gain.connect(state.masterGain!);
+
+    // Mel voices also route to the echo bus so high-h has obvious space
+    if (state.delayNode) gain.connect(state.delayNode);
+
+    mod.start(time);
+    carrier.start(time);
+    mod.stop(time + 0.6 + h * 0.2);
+    carrier.stop(time + 0.6 + h * 0.2);
+
+    // At h > 0.4, add a detuned upper-octave voice for thickness
+    if (h > 0.4) {
+      const detuneCents = (Math.random() * 2 - 1) * 18 * h;
+      const upFreq = baseFreq * 2 * Math.pow(2, detuneCents / 1200);
+      const up = ctx.createOscillator();
+      const upGain = ctx.createGain();
+      up.type = 'sine';
+      up.frequency.setValueAtTime(upFreq, time);
+      const upAmp = vel * 0.08 * (h - 0.4) * 2;
+      upGain.gain.setValueAtTime(0.0001, time);
+      upGain.gain.exponentialRampToValueAtTime(upAmp, time + 0.015);
+      upGain.gain.exponentialRampToValueAtTime(0.0001, time + 0.5);
+      up.connect(upGain);
+      upGain.connect(state.masterGain!);
+      if (state.delayNode) upGain.connect(state.delayNode);
+      up.start(time);
+      up.stop(time + 0.55);
+    }
+  }
+
+  function scheduleNote(state: EngineState, hit: Rendered['hits'][number], baseTime: number): void {
+    switch (hit.row) {
+      case 0:
+        playKick(state, baseTime, hit.vel);
+        break;
+      case 1:
+        playSnare(state, baseTime, hit.vel);
+        break;
+      case 2:
+        playHat(state, baseTime, hit.vel);
+        break;
+      case 3:
+        if (typeof hit.note === 'number') playMel(state, baseTime, hit.vel, hit.note, hit.cents);
+        break;
+    }
+  }
+
+  // ─── Transport loop with lookahead scheduler ────────────────────────
+  function scheduler(state: EngineState): void {
+    if (!state.audioCtx || !state.isPlaying) return;
+    const now = state.audioCtx.currentTime;
+    const secPerStep = stepSeconds();
+
+    while (state.nextNoteTime < now + state.scheduleAheadTime) {
+      // For each hit whose "ideal" step == state.currentStep, play at its jittered time
+      const barStartTime = state.nextNoteTime - state.currentStep * secPerStep;
+      for (const hit of state.rendered.hits) {
+        if (hit.step === state.currentStep) {
+          // Actual fire time uses the jittered x (which encodes fractional step)
+          const stepW = NOTE_AREA_W / STEPS;
+          const fractional = (hit.x - LABEL_COL_X - stepW / 2) / stepW;
+          const fireTime = Math.max(state.audioCtx.currentTime, barStartTime + fractional * secPerStep);
+          scheduleNote(state, hit, fireTime);
+          // Schedule visual flash
+          const delayMs = Math.max(0, (fireTime - now) * 1000);
+          const noteIdx = state.rendered.hits.indexOf(hit);
+          setTimeout(() => flashNote(state, noteIdx), delayMs);
+        }
+      }
+      state.nextNoteTime += secPerStep;
+      state.currentStep = (state.currentStep + 1) % STEPS;
+      // Re-render on new bar so the slider's latest h value is reflected
+      if (state.currentStep === 0) {
+        state.rendered = computeRender(state.h);
+        renderSvg(state);
+      }
+    }
+
+    state.timerId = window.setTimeout(() => scheduler(state), state.lookaheadMs);
+  }
+
+  function flashNote(state: EngineState, noteIdx: number): void {
+    const els = state.notesGroup.querySelectorAll<SVGCircleElement>('circle.note');
+    const el = els[noteIdx];
+    if (!el) return;
+    el.classList.add('flash');
+    const origR = el.getAttribute('r');
+    el.setAttribute('r', '7');
+    setTimeout(() => {
+      el.classList.remove('flash');
+      if (origR) el.setAttribute('r', origR);
+    }, 120);
+  }
+
+  // ─── SVG rendering ──────────────────────────────────────────────────
+  function renderSvg(state: EngineState): void {
+    const { rendered, notesGroup, ghostsGroup } = state;
+
+    // Columns (16 verticals)
+    // Already set statically? Let's draw them once.
+
+    // Clear notes
+    while (notesGroup.firstChild) notesGroup.removeChild(notesGroup.firstChild);
+    while (ghostsGroup.firstChild) ghostsGroup.removeChild(ghostsGroup.firstChild);
+
+    for (const hit of rendered.hits) {
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('cx', String(hit.x));
+      c.setAttribute('cy', String(hit.y));
+      const r = hit.isGhost ? 2.8 : 3.5 + hit.vel * 2.5;
+      c.setAttribute('r', String(r));
+      c.setAttribute('class', `${hit.isGhost ? 'ghost' : 'note'} ${ROW_CLASS[hit.row]}`);
+      c.setAttribute('fill', hit.isGhost ? GHOST_FILL : ROW_FILL[hit.row]);
+      c.setAttribute('opacity', String(hit.isGhost ? 0.35 : Math.min(1, 0.5 + hit.vel * 0.5)));
+      (hit.isGhost ? ghostsGroup : notesGroup).appendChild(c);
+    }
+  }
+
+  function drawColumns(state: EngineState): void {
+    const colsGroup = state.svg.querySelector('.grid-cols') as SVGGElement;
+    while (colsGroup.firstChild) colsGroup.removeChild(colsGroup.firstChild);
+    const stepW = NOTE_AREA_W / STEPS;
+    for (let i = 0; i <= STEPS; i++) {
+      const x = LABEL_COL_X + i * stepW;
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', String(x));
+      line.setAttribute('x2', String(x));
+      line.setAttribute('y1', '15');
+      line.setAttribute('y2', '210');
+      if (i % 4 === 0) {
+        line.setAttribute('stroke', 'rgba(199,75,143,0.22)');
+      }
+      colsGroup.appendChild(line);
+    }
+  }
+
+  function updateReadout(state: EngineState): void {
+    const h = state.h;
+    state.hValueEl.textContent = h.toFixed(2);
+    state.stageEl.textContent = stageFor(h);
+    state.timingEl.textContent = `±${(MAX_DRIFT_MS * h).toFixed(0)} ms`;
+    state.velocityEl.textContent = `±${(MAX_VEL * 100 * h).toFixed(0)} %`;
+    state.pitchEl.textContent = `±${(MAX_CENTS * h).toFixed(0)} cents`;
+    const ghostCount = state.rendered.hits.filter((hit) => hit.isGhost).length;
+    state.ghostsEl.textContent = String(ghostCount);
+  }
+
+  function animatePlayhead(state: EngineState): void {
+    if (!state.audioCtx || !state.isPlaying) return;
+    const secPerStep = stepSeconds();
+    const loopDur = secPerStep * STEPS;
+    const t = state.audioCtx.currentTime;
+    const barT = t % loopDur;
+    const stepFloat = barT / secPerStep;
+    const x = stepToX(stepFloat);
+    state.playhead.setAttribute('x1', String(x));
+    state.playhead.setAttribute('x2', String(x));
+    requestAnimationFrame(() => animatePlayhead(state));
+  }
+
+  // ─── Wiring ─────────────────────────────────────────────────────────
+  function wire(root: HTMLElement): void {
+    const svg = root.querySelector('svg.humanize-grid') as SVGSVGElement | null;
+    const rangeEl = root.querySelector('.humanize-range') as HTMLInputElement | null;
+    const playBtn = root.querySelector('.humanize-play') as HTMLButtonElement | null;
+    const notesGroup = root.querySelector('.notes') as SVGGElement | null;
+    const ghostsGroup = root.querySelector('.ghost-notes') as SVGGElement | null;
+    const playhead = root.querySelector('.playhead line') as SVGLineElement | null;
+    const hValueEl = root.querySelector('.h-num') as HTMLElement | null;
+    const stageEl = root.querySelector('.h-stage') as HTMLElement | null;
+    const timingEl = root.querySelector('[data-stat="timing"]') as HTMLElement | null;
+    const velocityEl = root.querySelector('[data-stat="velocity"]') as HTMLElement | null;
+    const pitchEl = root.querySelector('[data-stat="pitch"]') as HTMLElement | null;
+    const ghostsEl = root.querySelector('[data-stat="ghosts"]') as HTMLElement | null;
+
+    if (
+      !svg ||
+      !rangeEl ||
+      !playBtn ||
+      !notesGroup ||
+      !ghostsGroup ||
+      !playhead ||
+      !hValueEl ||
+      !stageEl ||
+      !timingEl ||
+      !velocityEl ||
+      !pitchEl ||
+      !ghostsEl
+    ) {
+      return;
+    }
+
+    const state: EngineState = {
+      root,
+      audioCtx: null,
+      isPlaying: false,
+      nextNoteTime: 0,
+      currentStep: 0,
+      scheduleAheadTime: 0.1,
+      lookaheadMs: 25,
+      timerId: null,
+      rendered: computeRender(0),
+      h: 0,
+      svg,
+      notesGroup,
+      ghostsGroup,
+      playhead,
+      hValueEl,
+      stageEl,
+      timingEl,
+      velocityEl,
+      pitchEl,
+      ghostsEl,
+      rangeEl,
+      playBtn,
+      masterGain: null,
+      wetBus: null,
+      delayNode: null,
+      feedbackGain: null,
+    };
+
+    drawColumns(state);
+    renderSvg(state);
+    updateReadout(state);
+
+    const SOURCE_ID = 'humanize-slider';
+
+    function stopEngine(): void {
+      if (!state.isPlaying) return;
+      state.isPlaying = false;
+      root.classList.remove('is-playing');
+      if (state.timerId !== null) {
+        clearTimeout(state.timerId);
+        state.timerId = null;
+      }
+      document.dispatchEvent(
+        new CustomEvent('hp:ended', { detail: { id: SOURCE_ID } }),
+      );
+    }
+
+    rangeEl.addEventListener('input', () => {
+      state.h = Number.parseFloat(rangeEl.value);
+      state.rendered = computeRender(state.h);
+      renderSvg(state);
+      updateReadout(state);
+      updateEchoWet(state);
+    });
+
+    playBtn.addEventListener('click', async () => {
+      if (state.isPlaying) {
+        stopEngine();
+        return;
+      }
+      // Pause any <audio> elements on the page before starting a tool
+      document.querySelectorAll<HTMLAudioElement>('audio').forEach((a) => {
+        if (!a.paused) a.pause();
+      });
+      ensureAudio(state);
+      updateEchoWet(state);
+      if (state.audioCtx?.state === 'suspended') {
+        await state.audioCtx.resume();
+      }
+      state.isPlaying = true;
+      state.currentStep = 0;
+      state.nextNoteTime = state.audioCtx!.currentTime + 0.05;
+      root.classList.add('is-playing');
+      scheduler(state);
+      animatePlayhead(state);
+
+      document.dispatchEvent(
+        new CustomEvent('hp:now-playing', {
+          detail: {
+            id: SOURCE_ID,
+            title: 'Humanize Pattern (synthesized live)',
+            paused: false,
+            pause: () => stopEngine(),
+            stop: () => stopEngine(),
+          },
+        }),
+      );
+    });
+
+    document.addEventListener('hp:stop-all', () => {
+      if (state.isPlaying) stopEngine();
+    });
+  }
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-humanize]').forEach(wire);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>

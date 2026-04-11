@@ -1,0 +1,25 @@
+---
+import HumanizeSlider from './HumanizeSlider.astro';
+import StemCrossfader from './StemCrossfader.astro';
+---
+
+<div class="section-divider"></div>
+<section class="origin" style="padding-top: 2rem;">
+  <h2>The humanize() Slider</h2>
+  <div class="origin-text">
+    <p>
+      <em>Hard Problem</em> is governed by a single parameter that runs from 0.0 to 1.0 over the course of the track.
+      At zero, everything is on a perfect grid. At one, timing drifts, velocities vary, pitches waver, and ghost notes
+      appear randomly. The song is not performed — it is learning to perform.
+    </p>
+    <p>
+      Two ways to feel it below. First, a pattern synthesized live in your browser with the same humanize constants
+      used on the album (±25 ms timing, ±30% velocity, ±15 cents pitch). Second, the actual album track re-rendered
+      five times with <code class="inline">humanize()</code> frozen at 0, 0.25, 0.5, 0.75, and 1.0 — drag between them
+      and listen to the song learn to breathe.
+    </p>
+  </div>
+
+  <HumanizeSlider />
+  <StemCrossfader />
+</section>

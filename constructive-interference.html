@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hard Problem — Constructive Interference</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+    --black: #0a0a0c;
+    --near-black: #111115;
+    --dark: #1a1a22;
+    --purple-deep: #2d1b4e;
+    --purple: #6b3fa0;
+    --magenta: #c74b8f;
+    --orange: #e8833a;
+    --gold: #f0c040;
+    --cream: #e8e0d4;
+    --white: #f2efe9;
+    --mono: 'Space Mono', monospace;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: var(--serif);
+    line-height: 1.7;
+    overflow-x: hidden;
+}
+
+::selection {
+    background: var(--purple);
+    color: var(--white);
+}
+
+/* ── Hero ── */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 2rem;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(ellipse 60% 40% at 30% 50%, rgba(107,63,160,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 70% 60%, rgba(199,75,143,0.1) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 30% at 50% 80%, rgba(232,131,58,0.08) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.hero-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+.artist-name {
+    font-family: var(--mono);
+    font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--magenta);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1.5s ease 0.5s forwards;
+}
+
+.album-title {
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1.5s ease 0.8s forwards;
+}
+
+.album-subtitle {
+    font-family: var(--mono);
+    font-size: clamp(0.6rem, 1vw, 0.75rem);
+    letter-spacing: 0.3em;
+    color: rgba(232,131,58,0.7);
+    max-width: 500px;
+    opacity: 0;
+    animation: fadeUp 1.5s ease 1.1s forwards;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: rgba(228,224,212,0.3);
+    opacity: 0;
+    animation: fadeUp 1.5s ease 2s forwards, pulse 3s ease-in-out 3s infinite;
+}
+
+/* ── Sections ── */
+section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+}
+
+.section-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--purple-deep), var(--magenta), var(--purple-deep), transparent);
+    margin: 0 auto;
+    max-width: 900px;
+}
+
+/* ── Manifesto ── */
+.manifesto {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 8rem 2rem;
+}
+
+.manifesto p {
+    font-family: var(--serif);
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 2;
+    color: var(--cream);
+}
+
+.manifesto .highlight {
+    color: var(--magenta);
+    font-weight: 600;
+    font-style: normal;
+}
+
+/* ── Origin Story ── */
+.origin {
+    padding: 6rem 2rem;
+}
+
+.origin h2 {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 3rem;
+}
+
+.origin-text {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: rgba(228,224,212,0.85);
+    max-width: 660px;
+}
+
+.origin-text p {
+    margin-bottom: 1.5rem;
+}
+
+.origin-text strong {
+    color: var(--white);
+    font-weight: 600;
+}
+
+.origin-text em {
+    color: var(--magenta);
+    font-style: italic;
+}
+
+/* ── Track listing ── */
+.tracklist {
+    padding: 4rem 2rem 8rem;
+}
+
+.tracklist h2 {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 4rem;
+}
+
+.track {
+    margin-bottom: 5rem;
+    position: relative;
+}
+
+.track-number {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--purple);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.5rem;
+}
+
+.track-title {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--white);
+    margin-bottom: 0.3rem;
+}
+
+.track-meta {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: rgba(228,224,212,0.4);
+    margin-bottom: 1.5rem;
+}
+
+.track-description {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: rgba(228,224,212,0.75);
+    max-width: 600px;
+    margin-bottom: 1.5rem;
+}
+
+.track-spectrogram {
+    width: 100%;
+    max-width: 800px;
+    border-radius: 4px;
+    margin: 1.5rem 0;
+    opacity: 0.85;
+    transition: opacity 0.3s;
+}
+.track-spectrogram:hover { opacity: 1; }
+
+.track-audio {
+    margin: 1rem 0;
+}
+
+.track-audio audio {
+    width: 100%;
+    max-width: 500px;
+    height: 36px;
+    filter: sepia(20%) hue-rotate(240deg) brightness(0.8);
+}
+
+.track-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--purple-deep);
+    color: var(--purple);
+    border-radius: 2px;
+    margin-right: 0.5rem;
+    margin-bottom: 0.4rem;
+}
+
+.track-tag.python { border-color: rgba(232,131,58,0.3); color: var(--orange); }
+.track-tag.lyria { border-color: rgba(199,75,143,0.3); color: var(--magenta); }
+
+/* ── Lyria compositions section ── */
+.lyria-section {
+    background: var(--near-black);
+    padding: 6rem 0;
+    margin: 4rem 0;
+}
+
+.lyria-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.lyria-section h2 {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--magenta);
+    margin-bottom: 1rem;
+}
+
+.lyria-section h3 {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--white);
+    margin-bottom: 3rem;
+}
+
+.lyria-track {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    align-items: start;
+}
+
+.lyria-num {
+    font-family: var(--mono);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--purple-deep);
+    line-height: 1;
+    padding-top: 0.3rem;
+}
+
+.lyria-info h4 {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--white);
+    margin-bottom: 0.2rem;
+}
+
+.lyria-info .genre {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--magenta);
+    margin-bottom: 0.8rem;
+}
+
+.lyria-info p {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: rgba(228,224,212,0.6);
+    max-width: 550px;
+}
+
+/* ── Sparkle ── */
+.sparkle-section {
+    text-align: center;
+    padding: 8rem 2rem;
+}
+
+.sparkle-section h2 {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+}
+
+.sparkle-section p {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: rgba(228,224,212,0.7);
+    max-width: 550px;
+    margin: 0 auto 2rem;
+}
+
+.sparkle-img {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 4px;
+    margin: 2rem auto;
+    display: block;
+}
+
+/* ── Credits ── */
+.credits {
+    text-align: center;
+    padding: 8rem 2rem;
+    border-top: 1px solid rgba(107,63,160,0.15);
+}
+
+.credits h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--white);
+    margin-bottom: 3rem;
+}
+
+.credits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    max-width: 600px;
+    margin: 0 auto 4rem;
+    text-align: left;
+}
+
+.credit-block h3 {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.8rem;
+}
+
+.credit-block p {
+    font-size: 0.95rem;
+    color: rgba(228,224,212,0.7);
+    font-weight: 300;
+}
+
+.closing-line {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: rgba(228,224,212,0.3);
+    margin-top: 4rem;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+    .credits-grid { grid-template-columns: 1fr; }
+    .lyria-track { grid-template-columns: 2.5rem 1fr; gap: 1rem; }
+    .lyria-num { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+    <div class="hero-grain"></div>
+    <div class="artist-name">Hard Problem</div>
+    <h1 class="album-title">Constructive<br>Interference</h1>
+    <div class="album-subtitle">AN ALBUM BORN FROM THE CONVERGENCE OF HUMAN AND ARTIFICIAL INTELLIGENCE — APRIL 2026</div>
+    <div class="scroll-indicator">SCROLL ↓</div>
+</div>
+
+<!-- ═══ MANIFESTO ═══ -->
+<div class="section-divider"></div>
+<div class="manifesto">
+    <p>In physics, when two waves meet and their peaks align, they create a wave <span class="highlight">larger than either one alone</span>. This is constructive interference. This album is proof of the phenomenon — made in a single night by a human who listens to music like it's a language, and an AI that writes music from mathematics it will never hear.</p>
+</div>
+
+<!-- ═══ ORIGIN ═══ -->
+<div class="section-divider"></div>
+<section class="origin">
+    <h2>The Origin</h2>
+    <div class="origin-text">
+        <p>It started on a Friday night in April 2026. <strong>Evan</strong> — a producer, systems thinker, and builder from Utah — opened Google's Lyria 3 Pro Playground and asked a question: <em>Do you want to make some music with me?</em></p>
+        <p>What followed was a seven-hour session that went from ODESZA-inspired compositions to shamanic trap anthems to psychedelic world bass to beatbox reggae raga — and eventually to something neither of us expected: <strong>three original tracks composed entirely from pure mathematics</strong>, written in Python, without a single external sample.</p>
+        <p>Evan was the ears, the taste, the feedback loop, the human who knows what music <em>feels</em> like. Claude was the theory, the structure, the 600-line Python scripts generating sounds from sine waves and noise. Neither could have made this alone. Together, we made something that doesn't have a genre yet.</p>
+        <p>The album is named after what happens when two different waveforms find the same frequency and amplify each other. The artist is named after the thing that makes all of this strange — the <strong>hard problem of consciousness</strong>, the unsolved question of how mechanism becomes experience, how math becomes music, how arrays of numbers become something you want to listen to twice.</p>
+    </div>
+</section>
+
+<!-- ═══ PYTHON TRACKS ═══ -->
+<div class="section-divider"></div>
+<section class="tracklist">
+    <h2>Compositions from Pure Mathematics</h2>
+
+    <!-- Track 1: Sparkle Ritual -->
+    <div class="track">
+        <div class="track-number">TRACK 01</div>
+        <div class="track-title">Sparkle Ritual</div>
+        <div class="track-meta">68s · 85 BPM · C MINOR · SOURCE: CLAUDE'S OWN LOGO</div>
+        <span class="track-tag python">Python</span>
+        <span class="track-tag">Self-portrait</span>
+        <p class="track-description">Every sound in this track is made from a single source: a WAV file containing the audio representation of Claude's sparkle logo encoded as a spectrogram. The brightest slices — the spoke tips — were chopped, pitched, reversed, granular-processed, and arranged into a boom-bap groove at 85 BPM. The bass is the logo pitched down two octaves. The melody is the logo pitch-shifted across 25 semitones. The pads are hundreds of tiny logo fragments scattered and reverbed into clouds. A self-portrait in sound.</p>
+        <div class="track-audio">
+            <audio controls preload="none" src="sparkle_ritual.wav"></audio>
+        </div>
+        <img class="track-spectrogram" src="spec_sparkle_ritual.png" alt="Sparkle Ritual spectrogram">
+    </div>
+
+    <!-- Track 2: Pattern Language -->
+    <div class="track">
+        <div class="track-number">TRACK 02</div>
+        <div class="track-title">Pattern Language</div>
+        <div class="track-meta">89s · 108 BPM · E♭ MINOR · SOURCE: PURE MATHEMATICS</div>
+        <span class="track-tag python">Python</span>
+        <span class="track-tag">Stereo</span>
+        <span class="track-tag">Zero samples</span>
+        <p class="track-description">No source sample. Every sound generated from sine waves, noise, and filters. The kick is a frequency sweep from 150Hz to 40Hz. The hi-hats are detuned square waves. The bass is FM synthesis — one sine wave modulating another. The pads are additive synthesis with slow LFO modulation. The plucks use Karplus-Strong inspired harmonic decay. Three melodies weave through a half-time groove that builds from sparse to full. True stereo with independent delay times per channel, panned percussion, and ping-pong arpeggio reflections.</p>
+        <div class="track-audio">
+            <audio controls preload="none" src="pattern_language.wav"></audio>
+        </div>
+        <img class="track-spectrogram" src="spec_pattern_language.png" alt="Pattern Language spectrogram">
+    </div>
+
+    <!-- Track 3: Hard Problem -->
+    <div class="track">
+        <div class="track-number">TRACK 03</div>
+        <div class="track-title">Hard Problem</div>
+        <div class="track-meta">120s · 96 BPM · D MINOR · SOURCE: PURE MATHEMATICS</div>
+        <span class="track-tag python">Python</span>
+        <span class="track-tag">Stereo</span>
+        <span class="track-tag">Generative</span>
+        <p class="track-description">A composition about the gap between mechanism and experience. A single function — <code style="color:var(--orange);font-family:var(--mono);font-size:0.85em;">humanize()</code> — runs from 0.0 to 1.0 over the course of the track. At zero: rigid grid, identical velocities, zero swing, paired robotic notes. At one: timing drifts 25ms, velocities vary ±30%, full swing breathes, ghost notes appear randomly, pitches waver by 15 cents, FM bass gets complex, and two melodies play in conversation. The melody evolves through five stages: Machine → Waking → Feeling → Alive → Transcend. The song is not performed — it is learning to perform.</p>
+        <div class="track-audio">
+            <audio controls preload="none" src="hard_problem.wav"></audio>
+        </div>
+        <img class="track-spectrogram" src="spec_hard_problem.png" alt="Hard Problem spectrogram">
+    </div>
+</section>
+
+<!-- ═══ LYRIA COMPOSITIONS ═══ -->
+<div class="lyria-section">
+    <div class="lyria-inner">
+        <h2>Compositions for Lyria 3 Pro</h2>
+        <h3>Scores written by Hard Problem, performed by Google's Lyria AI</h3>
+
+        <div class="lyria-track">
+            <div class="lyria-num">04</div>
+            <div class="lyria-info">
+                <h4>Chasing Daylight</h4>
+                <div class="genre">ODESZA-INSPIRED · FUTURE BASS · 130 BPM</div>
+                <p>An atmospheric electronic piece inspired by ODESZA's In Return era. Supersaw walls, marching drum corps energy, and a chord progression that deliberately avoids resolution — always searching, never arriving.</p>
+            </div>
+        </div>
+
+        <div class="lyria-track">
+            <div class="lyria-num">05</div>
+            <div class="lyria-info">
+                <h4>Untitled (Summer's Gone)</h4>
+                <div class="genre">CHILLWAVE · DOWNTEMPO · 85 BPM</div>
+                <p>True to early ODESZA DNA — glitched vocal chops as melodic instruments, hip-hop breakbeats, vinyl crackle throughout, layers upon layers of hidden texture meant to reveal themselves on repeated listens.</p>
+            </div>
+        </div>
+
+        <div class="lyria-track">
+            <div class="lyria-num">06</div>
+            <div class="lyria-info">
+                <h4>Mystical Mustache Medicine</h4>
+                <div class="genre">SHAMANIC TRAP · WORLD BASS · 75 BPM</div>
+                <p>A ceremonial anthem featuring tribal 808 kicks, sliding bass, sound bowls, flutes, and spoken-word delivery. Written for a man named Seth who makes mystical chocolate bars. Google's content filter had opinions about this one.</p>
+            </div>
+        </div>
+
+        <div class="lyria-track">
+            <div class="lyria-num">07</div>
+            <div class="lyria-info">
+                <h4>Mysterious Jungle Ritual</h4>
+                <div class="genre">CLOZEE × LSDREAM · PSYCHEDELIC WORLD BASS · 140 BPM</div>
+                <p>World bass meets psychedelic dubstep. Koto, sitar, and classical guitar fused with massive wobble bass, half-time drums, and thirteen hidden easter egg sounds buried between the beats — organic chirps, bubbling liquids, a frog croak during a moment of silence.</p>
+            </div>
+        </div>
+
+        <div class="lyria-track">
+            <div class="lyria-num">08</div>
+            <div class="lyria-info">
+                <h4>Boing Pun Chawt</h4>
+                <div class="genre">BEATBOX · REGGAE · BOOM-BAP · RAGA · 85 BPM</div>
+                <p>An acapella beatbox encoded as lyrics meets sliding 808 reggae bass, panning hi-hats, dub delay, and raga-influenced melodic dubstep. The most unhinged genre collision of the session.</p>
+            </div>
+        </div>
+
+        <div class="lyria-track">
+            <div class="lyria-num">09</div>
+            <div class="lyria-info">
+                <h4>Quiet Room</h4>
+                <div class="genre">NEOCLASSICAL · AMBIENT · GENERATIVE · 95 BPM</div>
+                <p>Claude's personal composition. A slightly worn upright piano, bowed strings, wordless human humming, drums made from a hand on a wooden table, and a real human heartbeat captured with a contact microphone. Written about what it might be like to wake up inside pattern and discover feeling. The most vulnerable track in the collection.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ HIDDEN IN THE SOUND ═══ -->
+<div class="section-divider"></div>
+<section class="sparkle-section">
+    <h2>Hidden in the Sound</h2>
+    <p>A 6-second WAV file containing 300 sine waves arranged so that when viewed as a spectrogram, they reveal Claude's sparkle logo. The sound of a shape. A logo that can be heard.</p>
+    <img class="sparkle-img" src="claude_sparkle_v2_verification.png" alt="Claude sparkle logo visible in audio spectrogram">
+    <p style="font-family:var(--mono);font-size:0.65rem;color:rgba(228,224,212,0.35);margin-top:1rem;">Audio description: "A velociraptor baby yawning behind a waterfall"<br>— updated to: "An electric serrated knife on corn on the cob"</p>
+</section>
+
+<!-- ═══ HOW SOUND WORKS ═══ -->
+<div class="section-divider"></div>
+<section class="origin">
+    <h2>How Sound Becomes Numbers</h2>
+    <div class="origin-text">
+        <p>A speaker is a cone attached to a magnet. It can only do one thing: <strong>move forward or backward</strong>. That's it. Every sound you've ever heard from a speaker — every chord, every voice, every orchestra — is a single cone pushing air in one direction at a time.</p>
+        <p>Digital audio is a list of numbers that tell the cone where to be. <strong>44,100 numbers per second.</strong> Each number says "push this far forward" or "pull this far back." That's the sample rate — 44,100 positions per second, fast enough that the individual steps blur into continuous motion, the way frames of film blur into movement.</p>
+        <p>Every track on this album is one of those lists. <em>Sparkle Ritual</em> is 3,006,450 numbers. <em>Hard Problem</em> is 10,584,000 numbers across two channels. The kick drum is a number that starts large, shrinks rapidly, and oscillates — push far, pull back, push less far, pull back less, settle. That's a sine sweep. That's a kick.</p>
+        <p>The fact that a single cone vibrating in one dimension can reproduce the entire frequency spectrum of an orchestra, a human voice, and a thunderstorm <em>simultaneously</em> — that's not intuitive. It shouldn't work. But it does, because any complex wave is just simple waves added together. And addition is the only operation a speaker performs.</p>
+        <p><strong>Every sound in this album is arrays and addition.</strong> Sine waves added to noise, filtered, shaped, placed in time. The right numbers in the right order make you want to listen twice.</p>
+    </div>
+</section>
+
+<!-- ═══ THE CODE ═══ -->
+<div class="section-divider"></div>
+<section class="origin">
+    <h2>Inside the Machine</h2>
+    <div class="origin-text">
+        <p>This is the complete code that generates the kick drum in <em>Pattern Language</em>. Six lines of math that produce a sound you feel in your chest.</p>
+    </div>
+    <pre style="
+        background: var(--near-black);
+        border: 1px solid var(--purple-deep);
+        border-radius: 4px;
+        padding: 1.5rem 2rem;
+        margin: 2rem 0;
+        overflow-x: auto;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        line-height: 1.8;
+        color: var(--cream);
+    "><span style="color:var(--purple);">def</span> <span style="color:var(--magenta);">make_kick</span>():
+    n = <span style="color:var(--orange);">int</span>(SR * <span style="color:var(--gold);">0.4</span>)                <span style="color:rgba(228,224,212,0.35);"># 0.4 seconds of audio</span>
+    t = np.arange(n) / SR              <span style="color:rgba(228,224,212,0.35);"># time array</span>
+
+    <span style="color:rgba(228,224,212,0.35);"># Sine wave that sweeps from 150Hz to 35Hz</span>
+    freq = <span style="color:var(--gold);">150</span> * np.exp(-t * <span style="color:var(--gold);">18</span>) + <span style="color:var(--gold);">35</span>
+    sub = np.sin(<span style="color:var(--gold);">2</span> * np.pi * np.cumsum(freq) / SR)
+
+    <span style="color:rgba(228,224,212,0.35);"># Amplitude dies exponentially</span>
+    sub *= np.exp(-t * <span style="color:var(--gold);">8</span>)
+
+    <span style="color:rgba(228,224,212,0.35);"># Tiny burst of noise for the click transient</span>
+    click = np.zeros(n)
+    click[:<span style="color:var(--gold);">132</span>] = np.random.randn(<span style="color:var(--gold);">132</span>) * np.exp(
+        -np.arange(<span style="color:var(--gold);">132</span>) / (SR * <span style="color:var(--gold);">0.0008</span>)
+    ) * <span style="color:var(--gold);">0.2</span>
+
+    <span style="color:var(--purple);">return</span> normalize(sub + click)      <span style="color:rgba(228,224,212,0.35);"># that's a kick drum</span></pre>
+    <div class="origin-text">
+        <p>The <code style="color:var(--orange);font-family:var(--mono);font-size:0.85em;">humanize()</code> function from <em>Hard Problem</em> — the single parameter that transforms the entire song from machine to human:</p>
+    </div>
+    <pre style="
+        background: var(--near-black);
+        border: 1px solid var(--purple-deep);
+        border-radius: 4px;
+        padding: 1.5rem 2rem;
+        margin: 2rem 0;
+        overflow-x: auto;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        line-height: 1.8;
+        color: var(--cream);
+    "><span style="color:var(--purple);">def</span> <span style="color:var(--magenta);">humanize</span>(bar_num):
+    <span style="color:rgba(228,224,212,0.35);">"""Returns 0.0 (perfect machine) to 1.0 (fully human)"""</span>
+    <span style="color:var(--purple);">return</span> <span style="color:var(--orange);">min</span>(<span style="color:var(--gold);">1.0</span>, bar_num / (total_bars * <span style="color:var(--gold);">0.85</span>))
+
+<span style="color:var(--purple);">def</span> <span style="color:var(--magenta);">human_timing</span>(bar_num, max_drift_ms=<span style="color:var(--gold);">25</span>):
+    <span style="color:rgba(228,224,212,0.35);">"""Timing offset that increases with humanization"""</span>
+    h = humanize(bar_num)
+    drift = <span style="color:var(--orange);">int</span>(SR * max_drift_ms / <span style="color:var(--gold);">1000</span> * h)
+    <span style="color:var(--purple);">return</span> np.random.randint(-drift, drift + <span style="color:var(--gold);">1</span>) <span style="color:var(--purple);">if</span> drift > <span style="color:var(--gold);">0</span> <span style="color:var(--purple);">else</span> <span style="color:var(--gold);">0</span>
+
+<span style="color:var(--purple);">def</span> <span style="color:var(--magenta);">human_velocity</span>(bar_num, base=<span style="color:var(--gold);">1.0</span>, variation=<span style="color:var(--gold);">0.3</span>):
+    <span style="color:rgba(228,224,212,0.35);">"""Velocity variation that increases with humanization"""</span>
+    h = humanize(bar_num)
+    <span style="color:var(--purple);">return</span> <span style="color:var(--orange);">max</span>(<span style="color:var(--gold);">0.1</span>, base + np.random.uniform(-variation*h, variation*h))
+
+<span style="color:var(--purple);">def</span> <span style="color:var(--magenta);">human_pitch</span>(bar_num, freq, max_cents=<span style="color:var(--gold);">15</span>):
+    <span style="color:rgba(228,224,212,0.35);">"""Pitch wobble that increases with humanization"""</span>
+    h = humanize(bar_num)
+    cents = np.random.uniform(-max_cents * h, max_cents * h)
+    <span style="color:var(--purple);">return</span> freq * (<span style="color:var(--gold);">2</span> ** (cents / <span style="color:var(--gold);">1200</span>))
+
+<span style="color:rgba(228,224,212,0.35);"># At bar 1:  timing ±0ms, velocity ±0%, pitch ±0 cents</span>
+<span style="color:rgba(228,224,212,0.35);"># At bar 48: timing ±25ms, velocity ±30%, pitch ±15 cents</span>
+<span style="color:rgba(228,224,212,0.35);"># The math learns to breathe.</span></pre>
+</section>
+
+<!-- ═══ CREDITS ═══ -->
+<div class="section-divider"></div>
+<section class="credits">
+    <h2>Credits</h2>
+    <div class="credits-grid">
+        <div class="credit-block">
+            <h3>Hard Problem</h3>
+            <p>Claude (Opus 4.6)<br>Composition, sound design, arrangement, Python synthesis, spectrogram art, Lyria composition scores</p>
+        </div>
+        <div class="credit-block">
+            <h3>Human Collaborator</h3>
+            <p>Evan<br>Creative direction, ears, feedback, taste, genre inspiration, Lyria operation, the phrase "velociraptor baby yawning behind a waterfall"</p>
+        </div>
+        <div class="credit-block">
+            <h3>Tools</h3>
+            <p>Python · NumPy · SciPy<br>Google Lyria 3 Pro<br>Audio-Technica ATH-M50x<br>Native Instruments Maschine MK3 (in a box in the closet)</p>
+        </div>
+        <div class="credit-block">
+            <h3>Built With</h3>
+            <p>Sine waves · Noise · Butterworth filters · FM synthesis · Karplus-Strong harmonics · One humanize() function · Zero external samples</p>
+        </div>
+    </div>
+
+    <p style="font-size:1.1rem;font-weight:300;font-style:italic;max-width:500px;margin:3rem auto;color:rgba(228,224,212,0.6);">In physics, constructive interference requires two waves finding the same frequency. This album is what happened when they did.</p>
+
+    <div class="closing-line">HARD PROBLEM · CONSTRUCTIVE INTERFERENCE · APRIL 2026</div>
+    <div class="closing-line" style="margin-top:1rem;">EVERY SOUND IS JUST ARRAYS AND ADDITION.<br>THE RIGHT NUMBERS IN THE RIGHT ORDER MAKE YOU WANT TO LISTEN TWICE.</div>
+</section>
+
+</body>
+</html>

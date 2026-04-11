@@ -1,0 +1,28 @@
+---
+import AudioPlayer from './AudioPlayer.astro';
+import Spectrogram from './Spectrogram.astro';
+import type { PythonTrack } from '../data/album';
+
+interface Props {
+  track: PythonTrack;
+  hueShift?: number;
+}
+
+const { track, hueShift = 0 } = Astro.props;
+---
+
+<div class="track">
+  <div class="track-number">{track.number}</div>
+  <div class="track-title">{track.title}</div>
+  <div class="track-meta">{track.meta}</div>
+  {
+    track.tags.map((t) => (
+      <span class={`track-tag ${t.variant ?? ''}`}>{t.label}</span>
+    ))
+  }
+  <p class="track-description">{track.description}</p>
+
+  <AudioPlayer src={track.audio} label={track.title} hueShift={hueShift} />
+
+  <Spectrogram src={track.spectrogram} alt={track.spectrogramAlt} trackTitle={track.title} />
+</div>

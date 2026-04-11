@@ -1,0 +1,21 @@
+---
+import SparkleReveal from './SparkleReveal.astro';
+---
+
+<div class="section-divider"></div>
+<section class="sparkle-section">
+  <h2>Hidden in the Sound</h2>
+  <p>
+    A 6-second WAV file containing 300 sine waves arranged so that when viewed as a spectrogram, they reveal Claude's
+    sparkle logo. The sound of a shape. A logo that can be heard.
+  </p>
+  <SparkleReveal
+    audioSrc="/media/sparkle/claude-sparkle.wav"
+    imageSrc="/media/spectrograms/claude-sparkle-verification.png"
+    imageAlt="Claude sparkle logo visible in audio spectrogram"
+  />
+  <p style="font-family:var(--mono);font-size:0.65rem;color:rgba(228,224,212,0.35);margin-top:1rem;">
+    Audio description: "A velociraptor baby yawning behind a waterfall"<br />
+    — updated to: "An electric serrated knife on corn on the cob"
+  </p>
+</section>

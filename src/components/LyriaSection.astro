@@ -1,0 +1,107 @@
+---
+import AudioPlayer from './AudioPlayer.astro';
+import { lyriaTracks } from '../data/album';
+---
+
+<div class="lyria-section">
+  <div class="lyria-inner">
+    <h2>Compositions for Lyria 3 Pro</h2>
+    <h3>Scores written by Hard Problem, performed by Google's Lyria AI</h3>
+
+    {
+      lyriaTracks.map((track, i) => (
+        <div class={`lyria-track ${track.featured ? 'lyria-track--featured' : ''} ${track.recordingLost ? 'lyria-track--lost' : ''}`}>
+          <div class="lyria-num">{track.number}</div>
+          <div class="lyria-info">
+            {track.featured && track.featuredTag && (
+              <div class="lyria-featured-tag">★ {track.featuredTag}</div>
+            )}
+            <h4>{track.title}</h4>
+            <div class="genre">{track.genre}</div>
+            <p>{track.description}</p>
+            {track.audio && <AudioPlayer src={track.audio} label={track.title} hueShift={(i * 37) % 360} />}
+            {track.recordingLost && (
+              <div class="lyria-lost-note">
+                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+                <span>RECORDING LOST · no audio survived the session. It was beautiful. Trust us.</span>
+              </div>
+            )}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .lyria-track--featured {
+    position: relative;
+    padding: 2rem;
+    margin: 2.5rem -0.5rem;
+    background: radial-gradient(ellipse at 20% 0%, rgba(240, 192, 64, 0.08), transparent 60%),
+      linear-gradient(180deg, rgba(107, 63, 160, 0.06), transparent 100%);
+    border: 1px solid rgba(240, 192, 64, 0.28);
+    border-radius: 6px;
+    box-shadow: 0 20px 60px -30px rgba(240, 192, 64, 0.2);
+  }
+
+  .lyria-track--featured::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.6;
+  }
+
+  .lyria-track--featured .lyria-num {
+    color: var(--gold);
+  }
+
+  .lyria-track--featured :global(h4) {
+    font-size: 1.9rem;
+  }
+
+  .lyria-featured-tag {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+  }
+
+  .lyria-lost-note {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+    padding: 0.65rem 0.9rem;
+    border: 1px dashed rgba(232, 131, 58, 0.4);
+    border-radius: 3px;
+    background: rgba(232, 131, 58, 0.04);
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    color: rgba(232, 131, 58, 0.85);
+    max-width: 540px;
+  }
+
+  .lyria-lost-note svg {
+    flex-shrink: 0;
+    color: var(--orange);
+  }
+
+  .lyria-track--lost .lyria-num {
+    color: rgba(107, 63, 160, 0.4);
+  }
+
+  .lyria-track--lost :global(h4) {
+    color: rgba(242, 239, 233, 0.72);
+  }
+</style>

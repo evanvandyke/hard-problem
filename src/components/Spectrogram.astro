@@ -1,0 +1,119 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  trackTitle: string;
+}
+
+const { src, alt, trackTitle } = Astro.props;
+---
+
+<figure class="spec-thumb">
+  <button
+    class="spec-thumb-btn"
+    type="button"
+    data-spec-trigger
+    data-spec-src={src}
+    data-spec-alt={alt}
+    data-spec-title={trackTitle}
+    aria-label={`View spectrogram of ${trackTitle} at full size`}
+  >
+    <img class="spec-thumb-img" src={src} alt={alt} loading="lazy" />
+    <span class="spec-thumb-overlay">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+        <path
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          d="M10 3H5a2 2 0 0 0-2 2v5M14 3h5a2 2 0 0 1 2 2v5M10 21H5a2 2 0 0 1-2-2v-5M14 21h5a2 2 0 0 0 2-2v-5"
+        />
+      </svg>
+      VIEW SPECTROGRAM
+    </span>
+  </button>
+  <figcaption class="spec-thumb-cap">SPECTROGRAM · {trackTitle.toUpperCase()}</figcaption>
+</figure>
+
+<style>
+  .spec-thumb {
+    margin: 1.25rem 0 0;
+    max-width: 800px;
+  }
+
+  .spec-thumb-btn {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid rgba(107, 63, 160, 0.25);
+    background: var(--near-black);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: zoom-in;
+    transition:
+      transform 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .spec-thumb-btn:hover {
+    border-color: rgba(199, 75, 143, 0.55);
+    box-shadow: 0 10px 30px -12px rgba(199, 75, 143, 0.3);
+  }
+
+  .spec-thumb-img {
+    display: block;
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.82;
+    transition: opacity 0.3s ease, transform 0.5s ease;
+  }
+
+  .spec-thumb-btn:hover .spec-thumb-img {
+    opacity: 1;
+    transform: scale(1.015);
+  }
+
+  .spec-thumb-overlay {
+    position: absolute;
+    right: 0.9rem;
+    bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    background: rgba(10, 10, 12, 0.65);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(240, 192, 64, 0.25);
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .spec-thumb-btn:hover .spec-thumb-overlay {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .spec-thumb-cap {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    color: rgba(228, 224, 212, 0.35);
+    margin-top: 0.6rem;
+  }
+
+  @media (min-width: 800px) {
+    .spec-thumb-img {
+      max-height: 240px;
+    }
+  }
+</style>

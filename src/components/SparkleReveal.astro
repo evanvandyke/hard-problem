@@ -1,0 +1,173 @@
+---
+interface Props {
+  audioSrc: string;
+  imageSrc: string;
+  imageAlt?: string;
+}
+
+const {
+  audioSrc,
+  imageSrc,
+  imageAlt = "Claude sparkle logo visible in audio spectrogram",
+} = Astro.props;
+---
+
+<div class="sparkle-reveal" data-sparkle-reveal>
+  <div class="sparkle-stage">
+    <img class="sparkle-img" src={imageSrc} alt={imageAlt} />
+    <div class="sparkle-veil"></div>
+    <div class="sparkle-scanline"></div>
+    <button class="sparkle-play" type="button" aria-label="Play sparkle audio">
+      <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+        <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6" />
+        <path fill="currentColor" d="M9 7.5v9c0 .6.6 1 1.2.7l7.1-4.5c.5-.3.5-1 0-1.3L10.2 6.8C9.6 6.5 9 6.9 9 7.5z" />
+      </svg>
+      <span>LISTEN TO A SHAPE</span>
+    </button>
+  </div>
+  <audio preload="metadata" src={audioSrc} data-title="Claude Sparkle (a logo you can hear)"></audio>
+</div>
+
+<style>
+  .sparkle-reveal {
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+
+  .sparkle-stage {
+    position: relative;
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(107, 63, 160, 0.25);
+    background: var(--near-black);
+    aspect-ratio: auto;
+  }
+
+  .sparkle-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: grayscale(0.2) brightness(0.55) contrast(1.1);
+    transition: filter 0.6s ease;
+  }
+
+  .sparkle-reveal.is-playing .sparkle-img {
+    filter: grayscale(0) brightness(1) contrast(1.15) saturate(1.3);
+  }
+
+  .sparkle-veil {
+    position: absolute;
+    inset: 0;
+    left: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(10, 10, 12, 0.85) var(--reveal, 0%), rgba(10, 10, 12, 0.95) 100%);
+    pointer-events: none;
+    transition: background 0.1s linear;
+  }
+
+  .sparkle-scanline {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--reveal, 0%);
+    width: 2px;
+    background: linear-gradient(180deg, transparent, var(--gold), var(--magenta), var(--gold), transparent);
+    box-shadow: 0 0 10px rgba(240, 192, 64, 0.8);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .sparkle-reveal.is-playing .sparkle-scanline {
+    opacity: 1;
+  }
+
+  .sparkle-play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: max-content;
+    height: max-content;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.4rem;
+    background: rgba(10, 10, 12, 0.6);
+    border: 1px solid rgba(240, 192, 64, 0.4);
+    border-radius: 40px;
+    color: var(--gold);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition:
+      opacity 0.4s ease,
+      transform 0.2s ease,
+      background 0.3s ease;
+  }
+
+  .sparkle-play:hover {
+    transform: scale(1.04);
+    background: rgba(240, 192, 64, 0.12);
+  }
+
+  .sparkle-reveal.is-playing .sparkle-play {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .sparkle-reveal audio {
+    display: none;
+  }
+</style>
+
+<script>
+  function wireReveal(root: HTMLElement) {
+    const audio = root.querySelector('audio') as HTMLAudioElement | null;
+    const btn = root.querySelector('.sparkle-play') as HTMLButtonElement | null;
+    if (!audio || !btn) return;
+
+    const setReveal = (pct: number) => {
+      root.style.setProperty('--reveal', `${Math.min(100, Math.max(0, pct))}%`);
+    };
+
+    btn.addEventListener('click', async () => {
+      // Pause other audios and tools first
+      document.querySelectorAll<HTMLAudioElement>('audio').forEach((a) => {
+        if (a !== audio && !a.paused) a.pause();
+      });
+      document.dispatchEvent(new CustomEvent('hp:stop-all'));
+      try {
+        await audio.play();
+      } catch {
+        /* autoplay blocked; ignore */
+      }
+    });
+
+    audio.addEventListener('play', () => root.classList.add('is-playing'));
+    audio.addEventListener('pause', () => root.classList.remove('is-playing'));
+    audio.addEventListener('ended', () => {
+      root.classList.remove('is-playing');
+      setReveal(100);
+    });
+
+    audio.addEventListener('timeupdate', () => {
+      const dur = audio.duration || 0;
+      if (dur > 0) setReveal((audio.currentTime / dur) * 100);
+    });
+
+    setReveal(0);
+  }
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-sparkle-reveal]').forEach(wireReveal);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>

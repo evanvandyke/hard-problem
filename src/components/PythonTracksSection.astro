@@ -1,0 +1,12 @@
+---
+import Track from './Track.astro';
+import { pythonTracks } from '../data/album';
+
+const hueShifts = [0, 45, -40];
+---
+
+<div class="section-divider"></div>
+<section class="tracklist">
+  <h2>Compositions from Pure Mathematics</h2>
+  {pythonTracks.map((track, i) => <Track track={track} hueShift={hueShifts[i] ?? 0} />)}
+</section>

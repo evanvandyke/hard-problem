@@ -1,0 +1,541 @@
+---
+const stems = [
+  { h: 0.0, src: '/media/humanize-stems/hp-h000.mp3', label: 'MACHINE' },
+  { h: 0.25, src: '/media/humanize-stems/hp-h025.mp3', label: 'WAKING' },
+  { h: 0.5, src: '/media/humanize-stems/hp-h050.mp3', label: 'FEELING' },
+  { h: 0.75, src: '/media/humanize-stems/hp-h075.mp3', label: 'ALIVE' },
+  { h: 1.0, src: '/media/humanize-stems/hp-h100.mp3', label: 'TRANSCEND' },
+];
+---
+
+<div class="stem-xf" data-stem-xf>
+  <div class="stem-xf-head">
+    <span class="stem-xf-eyebrow">ALBUM STEMS · 5 RENDERS</span>
+    <h3>Hear the actual track at every humanize level</h3>
+    <p>
+      The same <code>hard_problem.py</code> that produced the album, re-run five times with
+      <code>humanize()</code> frozen at 0, 0.25, 0.5, 0.75, and 1.0. Drag the slider to crossfade between
+      pre-rendered stems. Same seed, same notes, five different degrees of breath.
+    </p>
+  </div>
+
+  <div class="stem-xf-body">
+    <button class="stem-xf-play" type="button" aria-label="Play stems">
+      <svg class="icon icon-play" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path fill="currentColor" d="M7 5.5v13c0 .8.9 1.3 1.6.9l10.2-6.5c.6-.4.6-1.3 0-1.7L8.6 4.6C7.9 4.2 7 4.7 7 5.5z" />
+      </svg>
+      <svg class="icon icon-pause" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" />
+        <rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" />
+      </svg>
+    </button>
+
+    <div class="stem-xf-slider">
+      <input
+        class="stem-xf-range"
+        type="range"
+        min="0"
+        max="1"
+        step="0.001"
+        value="0"
+        aria-label="Humanize amount"
+      />
+      <div class="stem-xf-ticks">
+        {stems.map((s) => <span class="stem-xf-tick" data-h={s.h}>{s.label}</span>)}
+      </div>
+    </div>
+
+    <div class="stem-xf-readout">
+      <div class="h-value"><span>h =</span> <span class="h-num">0.00</span></div>
+      <div class="h-stage">MACHINE</div>
+    </div>
+  </div>
+
+  <div class="stem-xf-progress">
+    <div class="stem-xf-progress-fill"></div>
+  </div>
+
+  <!-- Audio elements, one per stem. data-no-bar keeps them out of the floating player's auto-subscription -->
+  <div class="stem-xf-audio">
+    {stems.map((s) => <audio preload="none" crossorigin="anonymous" data-h={s.h} data-no-bar="true" src={s.src}></audio>)}
+  </div>
+</div>
+
+<style>
+  .stem-xf {
+    max-width: 720px;
+    margin: 3rem auto 0;
+    padding: 2rem;
+    background: linear-gradient(180deg, rgba(17, 17, 21, 0.9) 0%, rgba(10, 10, 12, 0.8) 100%);
+    border: 1px solid rgba(199, 75, 143, 0.25);
+    border-radius: 6px;
+  }
+
+  .stem-xf-head {
+    margin-bottom: 2rem;
+  }
+
+  .stem-xf-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+
+  .stem-xf-head h3 {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--white);
+    margin-bottom: 0.8rem;
+  }
+
+  .stem-xf-head p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: rgba(228, 224, 212, 0.7);
+    max-width: 580px;
+  }
+
+  .stem-xf-head p code {
+    font-family: var(--mono);
+    font-size: 0.82em;
+    color: var(--orange);
+  }
+
+  .stem-xf-body {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.25rem;
+    align-items: center;
+  }
+
+  .stem-xf-play {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(240, 192, 64, 0.5);
+    background: radial-gradient(circle at 30% 30%, rgba(240, 192, 64, 0.12), transparent 70%);
+    color: var(--cream);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition:
+      transform 0.15s ease,
+      background 0.25s ease,
+      border-color 0.25s ease;
+  }
+
+  .stem-xf-play:hover {
+    transform: scale(1.06);
+    background: radial-gradient(circle at 30% 30%, rgba(240, 192, 64, 0.22), transparent 70%);
+    border-color: var(--gold);
+  }
+
+  .stem-xf-play .icon-pause {
+    display: none;
+  }
+
+  .stem-xf.is-playing .stem-xf-play .icon-play {
+    display: none;
+  }
+  .stem-xf.is-playing .stem-xf-play .icon-pause {
+    display: block;
+    color: var(--gold);
+  }
+
+  .stem-xf-slider {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .stem-xf-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(
+      90deg,
+      var(--purple-deep) 0%,
+      var(--purple) 25%,
+      var(--magenta) 50%,
+      var(--orange) 75%,
+      var(--gold) 100%
+    );
+    outline: none;
+    cursor: pointer;
+  }
+
+  .stem-xf-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 12px rgba(240, 192, 64, 0.5);
+    cursor: grab;
+  }
+
+  .stem-xf-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 12px rgba(240, 192, 64, 0.5);
+    cursor: grab;
+  }
+
+  .stem-xf-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 0.48rem;
+    letter-spacing: 0.15em;
+    color: rgba(228, 224, 212, 0.4);
+    padding: 0 2px;
+  }
+
+  .stem-xf-readout {
+    text-align: right;
+    font-family: var(--mono);
+    min-width: 8em;
+  }
+
+  .stem-xf-readout .h-value {
+    font-size: 0.75rem;
+    color: var(--cream);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stem-xf-readout .h-value span:first-child {
+    color: rgba(228, 224, 212, 0.4);
+  }
+
+  .stem-xf-readout .h-stage {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-top: 0.4rem;
+  }
+
+  .stem-xf-progress {
+    margin-top: 1.5rem;
+    height: 3px;
+    background: rgba(107, 63, 160, 0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .stem-xf-progress-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--purple), var(--magenta), var(--orange), var(--gold));
+    transition: width 0.1s linear;
+  }
+
+  .stem-xf-audio {
+    display: none;
+  }
+
+  @media (max-width: 560px) {
+    .stem-xf-body {
+      grid-template-columns: 1fr;
+    }
+    .stem-xf-readout {
+      text-align: left;
+    }
+  }
+</style>
+
+<script>
+  type StemNode = {
+    h: number;
+    audio: HTMLAudioElement;
+    source: MediaElementAudioSourceNode | null;
+    gain: GainNode | null;
+  };
+
+  type XfState = {
+    root: HTMLElement;
+    audioCtx: AudioContext | null;
+    masterGain: GainNode | null;
+    stems: StemNode[];
+    playBtn: HTMLButtonElement;
+    range: HTMLInputElement;
+    progress: HTMLElement;
+    hValue: HTMLElement;
+    hStage: HTMLElement;
+    isPlaying: boolean;
+    wired: boolean;
+    rafId: number | null;
+  };
+
+  function stageFor(h: number): string {
+    if (h < 0.001) return 'MACHINE';
+    if (h < 0.25) return 'WAKING';
+    if (h < 0.5) return 'FEELING';
+    if (h < 0.8) return 'ALIVE';
+    return 'TRANSCEND';
+  }
+
+  function computeGains(h: number, stemHs: number[]): number[] {
+    // Piecewise linear crossfade between neighboring stems.
+    // Total gain ≈ 1 at all positions.
+    const gains = new Array(stemHs.length).fill(0);
+    if (h <= stemHs[0]) {
+      gains[0] = 1;
+      return gains;
+    }
+    if (h >= stemHs[stemHs.length - 1]) {
+      gains[stemHs.length - 1] = 1;
+      return gains;
+    }
+    for (let i = 0; i < stemHs.length - 1; i++) {
+      if (h >= stemHs[i] && h <= stemHs[i + 1]) {
+        const span = stemHs[i + 1] - stemHs[i];
+        const t = span > 0 ? (h - stemHs[i]) / span : 0;
+        // Equal-power crossfade
+        gains[i] = Math.cos((t * Math.PI) / 2);
+        gains[i + 1] = Math.sin((t * Math.PI) / 2);
+        return gains;
+      }
+    }
+    return gains;
+  }
+
+  function ensureGraph(state: XfState): void {
+    if (state.wired) return;
+    const AudioCtx =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    state.audioCtx = new AudioCtx();
+    state.masterGain = state.audioCtx.createGain();
+    state.masterGain.gain.value = 0.9;
+    state.masterGain.connect(state.audioCtx.destination);
+
+    for (const stem of state.stems) {
+      stem.source = state.audioCtx.createMediaElementSource(stem.audio);
+      stem.gain = state.audioCtx.createGain();
+      stem.gain.gain.value = 0;
+      stem.source.connect(stem.gain);
+      stem.gain.connect(state.masterGain);
+    }
+    state.wired = true;
+  }
+
+  function applyMix(state: XfState): void {
+    const h = Number.parseFloat(state.range.value);
+    const hs = state.stems.map((s) => s.h);
+    const gains = computeGains(h, hs);
+    for (let i = 0; i < state.stems.length; i++) {
+      const gainNode = state.stems[i].gain;
+      if (gainNode && state.audioCtx) {
+        const now = state.audioCtx.currentTime;
+        gainNode.gain.setTargetAtTime(gains[i], now, 0.03);
+      }
+    }
+    state.hValue.textContent = h.toFixed(2);
+    state.hStage.textContent = stageFor(h);
+  }
+
+  function updateProgress(state: XfState): void {
+    // Use the first audio as the time authority; all stems play in sync.
+    const ref = state.stems[0].audio;
+    const dur = ref.duration || 0;
+    const cur = ref.currentTime || 0;
+    const pct = dur > 0 ? (cur / dur) * 100 : 0;
+    (state.progress.firstElementChild as HTMLElement).style.width = `${pct}%`;
+  }
+
+  function tick(state: XfState): void {
+    if (!state.isPlaying) return;
+    updateProgress(state);
+    state.rafId = requestAnimationFrame(() => tick(state));
+  }
+
+  const STEM_XF_ID = 'stem-crossfader';
+
+  function emitNowPlaying(state: XfState): void {
+    document.dispatchEvent(
+      new CustomEvent('hp:now-playing', {
+        detail: {
+          id: STEM_XF_ID,
+          title: 'Hard Problem — album stems',
+          paused: false,
+          pause: () => {
+            for (const stem of state.stems) stem.audio.pause();
+            state.isPlaying = false;
+            state.root.classList.remove('is-playing');
+            if (state.rafId) cancelAnimationFrame(state.rafId);
+            document.dispatchEvent(
+              new CustomEvent('hp:paused', { detail: { id: STEM_XF_ID } }),
+            );
+          },
+          resume: async () => {
+            try {
+              for (const stem of state.stems) await stem.audio.play();
+              state.isPlaying = true;
+              state.root.classList.add('is-playing');
+              tick(state);
+              document.dispatchEvent(
+                new CustomEvent('hp:resumed', { detail: { id: STEM_XF_ID } }),
+              );
+            } catch {
+              /* ignore */
+            }
+          },
+          stop: () => {
+            for (const stem of state.stems) {
+              stem.audio.pause();
+              stem.audio.currentTime = 0;
+            }
+            state.isPlaying = false;
+            state.root.classList.remove('is-playing');
+            if (state.rafId) cancelAnimationFrame(state.rafId);
+            document.dispatchEvent(
+              new CustomEvent('hp:ended', { detail: { id: STEM_XF_ID } }),
+            );
+          },
+          getTime: () => state.stems[0]?.audio.currentTime ?? 0,
+          getDuration: () => state.stems[0]?.audio.duration ?? 0,
+        },
+      }),
+    );
+  }
+
+  async function togglePlay(state: XfState): Promise<void> {
+    if (!state.isPlaying) {
+      // Pause any other <audio> elements and any running tool
+      document.querySelectorAll<HTMLAudioElement>('audio').forEach((a) => {
+        if (a.dataset.noBar !== 'true' && !a.paused) a.pause();
+      });
+      document.dispatchEvent(new CustomEvent('hp:stop-humanize'));
+
+      ensureGraph(state);
+      if (state.audioCtx?.state === 'suspended') {
+        await state.audioCtx.resume();
+      }
+      for (const stem of state.stems) {
+        stem.audio.currentTime = 0;
+      }
+      applyMix(state);
+      await Promise.all(state.stems.map((s) => s.audio.play()));
+      state.isPlaying = true;
+      state.root.classList.add('is-playing');
+      tick(state);
+      emitNowPlaying(state);
+    } else {
+      for (const stem of state.stems) {
+        stem.audio.pause();
+      }
+      state.isPlaying = false;
+      state.root.classList.remove('is-playing');
+      if (state.rafId) cancelAnimationFrame(state.rafId);
+      document.dispatchEvent(
+        new CustomEvent('hp:ended', { detail: { id: STEM_XF_ID } }),
+      );
+    }
+  }
+
+  function wire(root: HTMLElement): void {
+    const audios = Array.from(root.querySelectorAll<HTMLAudioElement>('audio[data-h]'));
+    if (audios.length === 0) return;
+
+    const range = root.querySelector('.stem-xf-range') as HTMLInputElement | null;
+    const playBtn = root.querySelector('.stem-xf-play') as HTMLButtonElement | null;
+    const progress = root.querySelector('.stem-xf-progress') as HTMLElement | null;
+    const hValue = root.querySelector('.h-num') as HTMLElement | null;
+    const hStage = root.querySelector('.h-stage') as HTMLElement | null;
+
+    if (!range || !playBtn || !progress || !hValue || !hStage) return;
+
+    const stems: StemNode[] = audios
+      .map((audio) => ({
+        h: Number.parseFloat(audio.dataset.h ?? '0'),
+        audio,
+        source: null,
+        gain: null,
+      }))
+      .sort((a, b) => a.h - b.h);
+
+    const state: XfState = {
+      root,
+      audioCtx: null,
+      masterGain: null,
+      stems,
+      playBtn,
+      range,
+      progress,
+      hValue,
+      hStage,
+      isPlaying: false,
+      wired: false,
+      rafId: null,
+    };
+
+    range.addEventListener('input', () => {
+      if (state.wired) applyMix(state);
+      else {
+        // Still update readout before playing
+        const h = Number.parseFloat(range.value);
+        hValue.textContent = h.toFixed(2);
+        hStage.textContent = stageFor(h);
+      }
+    });
+
+    playBtn.addEventListener('click', () => {
+      togglePlay(state).catch(() => {
+        /* playback rejected; ignore */
+      });
+    });
+
+    // When first stem ends, stop all
+    stems[0].audio.addEventListener('ended', () => {
+      for (const stem of state.stems) {
+        stem.audio.pause();
+        stem.audio.currentTime = 0;
+      }
+      state.isPlaying = false;
+      state.root.classList.remove('is-playing');
+      updateProgress(state);
+      if (state.rafId) cancelAnimationFrame(state.rafId);
+      document.dispatchEvent(
+        new CustomEvent('hp:ended', { detail: { id: STEM_XF_ID } }),
+      );
+    });
+
+    document.addEventListener('hp:stop-all', () => {
+      if (state.isPlaying) {
+        for (const stem of state.stems) {
+          stem.audio.pause();
+          stem.audio.currentTime = 0;
+        }
+        state.isPlaying = false;
+        state.root.classList.remove('is-playing');
+        if (state.rafId) cancelAnimationFrame(state.rafId);
+        document.dispatchEvent(
+          new CustomEvent('hp:ended', { detail: { id: STEM_XF_ID } }),
+        );
+      }
+    });
+  }
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-stem-xf]').forEach(wire);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>

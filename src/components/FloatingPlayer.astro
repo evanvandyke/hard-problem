@@ -1,0 +1,434 @@
+---
+---
+
+<div class="fp" data-floating-player aria-hidden="true">
+  <div class="fp-inner">
+    <div class="fp-pulse" aria-hidden="true"></div>
+
+    <div class="fp-meta">
+      <div class="fp-eyebrow">NOW PLAYING</div>
+      <div class="fp-title"></div>
+    </div>
+
+    <div class="fp-time">
+      <span class="fp-time-cur">0:00</span>
+      <div class="fp-progress"><div class="fp-progress-fill"></div></div>
+      <span class="fp-time-dur">0:00</span>
+    </div>
+
+    <div class="fp-actions">
+      <button class="fp-btn fp-pause" type="button" aria-label="Pause current">
+        <svg class="icon icon-pause" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" />
+          <rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" />
+        </svg>
+        <svg class="icon icon-play" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path fill="currentColor" d="M7 5.5v13c0 .8.9 1.3 1.6.9l10.2-6.5c.6-.4.6-1.3 0-1.7L8.6 4.6C7.9 4.2 7 4.7 7 5.5z" />
+        </svg>
+      </button>
+      <button class="fp-btn fp-stop" type="button" aria-label="Stop all audio">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <rect x="5" y="5" width="14" height="14" rx="1.5" fill="currentColor" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .fp {
+    position: fixed;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translate(-50%, 140%);
+    z-index: 90;
+    width: min(720px, calc(100vw - 2rem));
+    transition:
+      transform 0.45s cubic-bezier(0.2, 0.7, 0.15, 1),
+      opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .fp.is-visible {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .fp-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1.1rem;
+    background: rgba(10, 10, 12, 0.78);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgba(199, 75, 143, 0.35);
+    border-radius: 60px;
+    box-shadow:
+      0 30px 80px -30px rgba(0, 0, 0, 0.85),
+      0 0 0 1px rgba(10, 10, 12, 0.5),
+      0 0 40px -14px rgba(199, 75, 143, 0.35);
+  }
+
+  .fp-pulse {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--magenta);
+    box-shadow: 0 0 0 0 rgba(199, 75, 143, 0.6);
+    animation: fp-pulse 1.6s ease-out infinite;
+  }
+
+  @keyframes fp-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(199, 75, 143, 0.5); }
+    70% { box-shadow: 0 0 0 10px rgba(199, 75, 143, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(199, 75, 143, 0); }
+  }
+
+  .fp.is-paused .fp-pulse {
+    background: rgba(228, 224, 212, 0.3);
+    animation: none;
+  }
+
+  .fp-meta {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .fp-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.48rem;
+    letter-spacing: 0.25em;
+    color: rgba(240, 192, 64, 0.7);
+    margin-bottom: 0.15rem;
+  }
+
+  .fp-title {
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .fp-time {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    color: rgba(228, 224, 212, 0.5);
+    font-variant-numeric: tabular-nums;
+    min-width: 140px;
+  }
+
+  .fp-progress {
+    flex: 1 1 auto;
+    height: 3px;
+    background: rgba(107, 63, 160, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .fp-progress-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--purple), var(--magenta), var(--orange));
+    transition: width 0.1s linear;
+  }
+
+  .fp-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .fp-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(199, 75, 143, 0.35);
+    background: transparent;
+    color: var(--cream);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition:
+      transform 0.12s ease,
+      background 0.25s ease,
+      border-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .fp-btn:hover {
+    transform: scale(1.06);
+    border-color: var(--magenta);
+    color: var(--magenta);
+  }
+
+  .fp-stop:hover {
+    color: var(--orange);
+    border-color: var(--orange);
+  }
+
+  .fp-pause .icon-play {
+    display: none;
+  }
+
+  .fp.is-paused .fp-pause .icon-play {
+    display: block;
+  }
+
+  .fp.is-paused .fp-pause .icon-pause {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .fp {
+      bottom: 0.75rem;
+    }
+    .fp-inner {
+      grid-template-columns: auto 1fr auto;
+      border-radius: 20px;
+      padding: 0.75rem 0.9rem;
+    }
+    .fp-time {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fp-pulse {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  type CustomSource = {
+    id: string;
+    title: string;
+    paused: boolean;
+    resume?: () => void;
+    pause?: () => void;
+    stop?: () => void;
+    getTime?: () => number;
+    getDuration?: () => number;
+  };
+
+  type FpState = {
+    root: HTMLElement;
+    title: HTMLElement;
+    timeCur: HTMLElement;
+    timeDur: HTMLElement;
+    progressFill: HTMLElement;
+    pauseBtn: HTMLButtonElement;
+    stopBtn: HTMLButtonElement;
+    currentAudio: HTMLAudioElement | null;
+    currentCustom: CustomSource | null;
+    rafId: number | null;
+  };
+
+  function fmtTime(seconds: number): string {
+    if (!Number.isFinite(seconds)) return '0:00';
+    const s = Math.max(0, Math.floor(seconds));
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return `${m}:${r.toString().padStart(2, '0')}`;
+  }
+
+  function deriveTitle(a: HTMLAudioElement): string {
+    return a.dataset.title || a.getAttribute('aria-label') || 'Untitled';
+  }
+
+  function showBar(state: FpState): void {
+    state.root.classList.add('is-visible');
+    state.root.setAttribute('aria-hidden', 'false');
+  }
+
+  function hideBar(state: FpState): void {
+    state.root.classList.remove('is-visible');
+    state.root.classList.remove('is-paused');
+    state.root.setAttribute('aria-hidden', 'true');
+    state.currentAudio = null;
+    state.currentCustom = null;
+    if (state.rafId !== null) {
+      cancelAnimationFrame(state.rafId);
+      state.rafId = null;
+    }
+  }
+
+  function renderAudio(state: FpState): void {
+    const a = state.currentAudio;
+    if (!a) return;
+    state.title.textContent = deriveTitle(a);
+    const dur = a.duration || 0;
+    const cur = a.currentTime || 0;
+    state.timeCur.textContent = fmtTime(cur);
+    state.timeDur.textContent = fmtTime(dur);
+    state.progressFill.style.width = dur > 0 ? `${(cur / dur) * 100}%` : '0%';
+    if (a.paused) state.root.classList.add('is-paused');
+    else state.root.classList.remove('is-paused');
+  }
+
+  function renderCustom(state: FpState): void {
+    const c = state.currentCustom;
+    if (!c) return;
+    state.title.textContent = c.title;
+    const getT = c.getTime;
+    const getD = c.getDuration;
+    if (typeof getT === 'function' && typeof getD === 'function') {
+      const cur = getT();
+      const dur = getD();
+      state.timeCur.textContent = fmtTime(cur);
+      state.timeDur.textContent = fmtTime(dur);
+      state.progressFill.style.width = dur > 0 ? `${(cur / dur) * 100}%` : '0%';
+    } else {
+      state.timeCur.textContent = '';
+      state.timeDur.textContent = '';
+      state.progressFill.style.width = '100%';
+    }
+    if (c.paused) state.root.classList.add('is-paused');
+    else state.root.classList.remove('is-paused');
+  }
+
+  function tick(state: FpState): void {
+    if (state.currentAudio) renderAudio(state);
+    else if (state.currentCustom) renderCustom(state);
+    state.rafId = requestAnimationFrame(() => tick(state));
+  }
+
+  function setAudio(state: FpState, a: HTMLAudioElement): void {
+    state.currentCustom = null;
+    state.currentAudio = a;
+    showBar(state);
+    renderAudio(state);
+    if (state.rafId === null) tick(state);
+  }
+
+  function setCustom(state: FpState, source: CustomSource): void {
+    state.currentAudio = null;
+    state.currentCustom = source;
+    showBar(state);
+    renderCustom(state);
+    if (state.rafId === null) tick(state);
+  }
+
+  function wire() {
+    const root = document.querySelector<HTMLElement>('[data-floating-player]');
+    if (!root) return;
+
+    const title = root.querySelector<HTMLElement>('.fp-title');
+    const timeCur = root.querySelector<HTMLElement>('.fp-time-cur');
+    const timeDur = root.querySelector<HTMLElement>('.fp-time-dur');
+    const progressFill = root.querySelector<HTMLElement>('.fp-progress-fill');
+    const pauseBtn = root.querySelector<HTMLButtonElement>('.fp-pause');
+    const stopBtn = root.querySelector<HTMLButtonElement>('.fp-stop');
+
+    if (!title || !timeCur || !timeDur || !progressFill || !pauseBtn || !stopBtn) return;
+
+    const state: FpState = {
+      root,
+      title,
+      timeCur,
+      timeDur,
+      progressFill,
+      pauseBtn,
+      stopBtn,
+      currentAudio: null,
+      currentCustom: null,
+      rafId: null,
+    };
+
+    // Subscribe to every <audio> element that isn't explicitly excluded
+    const audios = Array.from(document.querySelectorAll<HTMLAudioElement>('audio'));
+    for (const a of audios) {
+      if (a.dataset.noBar === 'true') continue;
+      a.addEventListener('play', () => setAudio(state, a));
+      a.addEventListener('pause', () => {
+        if (state.currentAudio === a && a.currentTime > 0 && a.currentTime < (a.duration || Infinity)) {
+          renderAudio(state);
+        } else if (state.currentAudio === a) {
+          hideBar(state);
+        }
+      });
+      a.addEventListener('ended', () => {
+        if (state.currentAudio === a) hideBar(state);
+      });
+    }
+
+    // Subscribe to custom sources (HumanizeSlider, StemCrossfader)
+    document.addEventListener('hp:now-playing', ((e: Event) => {
+      const ce = e as CustomEvent<CustomSource>;
+      setCustom(state, ce.detail);
+    }) as EventListener);
+
+    document.addEventListener('hp:paused', ((e: Event) => {
+      const ce = e as CustomEvent<{ id: string }>;
+      if (state.currentCustom && state.currentCustom.id === ce.detail.id) {
+        state.currentCustom.paused = true;
+        renderCustom(state);
+      }
+    }) as EventListener);
+
+    document.addEventListener('hp:resumed', ((e: Event) => {
+      const ce = e as CustomEvent<{ id: string }>;
+      if (state.currentCustom && state.currentCustom.id === ce.detail.id) {
+        state.currentCustom.paused = false;
+        renderCustom(state);
+      }
+    }) as EventListener);
+
+    document.addEventListener('hp:ended', ((e: Event) => {
+      const ce = e as CustomEvent<{ id: string }>;
+      if (state.currentCustom && state.currentCustom.id === ce.detail.id) {
+        hideBar(state);
+      }
+    }) as EventListener);
+
+    // Pause button behavior: toggle the current source
+    pauseBtn.addEventListener('click', () => {
+      if (state.currentAudio) {
+        if (state.currentAudio.paused) {
+          state.currentAudio.play().catch(() => {});
+        } else {
+          state.currentAudio.pause();
+        }
+      } else if (state.currentCustom) {
+        if (state.currentCustom.paused) {
+          state.currentCustom.resume?.();
+          state.currentCustom.paused = false;
+        } else {
+          state.currentCustom.pause?.();
+          state.currentCustom.paused = true;
+        }
+        renderCustom(state);
+      }
+    });
+
+    // Stop button: kill everything
+    stopBtn.addEventListener('click', () => {
+      // Pause every audio on the page, including excluded ones
+      document.querySelectorAll<HTMLAudioElement>('audio').forEach((a) => {
+        a.pause();
+        a.currentTime = 0;
+      });
+      // Broadcast stop-all for custom sources
+      document.dispatchEvent(new CustomEvent('hp:stop-all'));
+      hideBar(state);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wire);
+  } else {
+    wire();
+  }
+</script>
