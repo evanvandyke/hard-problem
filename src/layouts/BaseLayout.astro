@@ -27,6 +27,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0a0a0c" />
+
     <meta property="og:type" content="music.album" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -46,8 +52,51 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     />
   </head>
   <body>
-    <slot />
+    <div class="app-shell" id="top">
+      <aside class="app-sidebar">
+        <slot name="sidebar" />
+      </aside>
+      <main class="app-main">
+        <slot />
+      </main>
+    </div>
     <SpectrogramLightbox />
     <FloatingPlayer />
+
+    <style is:global>
+      .app-shell {
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        min-height: 100vh;
+      }
+
+      .app-sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        background: rgba(17, 17, 21, 0.6);
+        border-right: 1px solid rgba(107, 63, 160, 0.18);
+        z-index: 10;
+        backdrop-filter: blur(6px);
+      }
+
+      .app-main {
+        min-width: 0;
+      }
+
+      /* Give sections room so sticky nav jumps land cleanly */
+      .app-main [id] {
+        scroll-margin-top: 1rem;
+      }
+
+      @media (max-width: 1023px) {
+        .app-shell {
+          grid-template-columns: 1fr;
+        }
+        .app-sidebar {
+          display: none;
+        }
+      }
+    </style>
   </body>
 </html>

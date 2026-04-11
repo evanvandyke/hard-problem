@@ -1,0 +1,20 @@
+{
+  "name": "Hard Problem — Constructive Interference",
+  "short_name": "Hard Problem",
+  "description": "An album born from the convergence of human and artificial intelligence.",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#6b3fa0",
+  "background_color": "#0a0a0c",
+  "display": "standalone"
+}

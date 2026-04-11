@@ -6,7 +6,7 @@ const hueShifts = [0, 45, -40];
 ---
 
 <div class="section-divider"></div>
-<section class="tracklist">
+<section class="tracklist" id="python-tracks">
   <h2>Compositions from Pure Mathematics</h2>
   {pythonTracks.map((track, i) => <Track track={track} hueShift={hueShifts[i] ?? 0} />)}
 </section>

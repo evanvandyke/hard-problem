@@ -1,0 +1,577 @@
+---
+import { sidebarTracks, sectionLinks, albumMeta } from '../data/album';
+---
+
+<aside class="sb" data-album-sidebar>
+  <div class="sb-top">
+    <a class="sb-cover" href="#top" aria-label="Back to top">
+      <img
+        src="/media/artwork/cover-1200.jpg"
+        alt="Constructive Interference cover art"
+        width="1200"
+        height="1200"
+      />
+    </a>
+    <div class="sb-meta">
+      <div class="sb-artist">HARD PROBLEM</div>
+      <div class="sb-title">Constructive Interference</div>
+      <div class="sb-year">{albumMeta.year} · 9 tracks</div>
+    </div>
+  </div>
+
+  <div class="sb-section">
+    <h4 class="sb-heading">Tracklist</h4>
+    <ol class="sb-tracks">
+      {
+        sidebarTracks.map((track) => (
+          <li
+            class={`sb-track ${track.featured ? 'is-featured' : ''} ${track.recordingLost ? 'is-lost' : ''}`}
+            data-sb-row
+            data-track-id={track.id}
+            data-track-audio={track.audio ?? ''}
+            data-track-kind={track.kind}
+          >
+            <button class="sb-track-btn" type="button" aria-label={`Play ${track.title}`}>
+              <span class="sb-num">{track.number}</span>
+              <span class="sb-icon">
+                <svg class="icn-play" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                  <path fill="currentColor" d="M7 5.5v13c0 .8.9 1.3 1.6.9l10.2-6.5c.6-.4.6-1.3 0-1.7L8.6 4.6C7.9 4.2 7 4.7 7 5.5z" />
+                </svg>
+                <svg class="icn-pause" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                  <rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" />
+                  <rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" />
+                </svg>
+                <svg class="icn-lost" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6" />
+                  <path d="M7 17L17 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+                <span class="eq" aria-hidden="true">
+                  <span></span><span></span><span></span>
+                </span>
+              </span>
+              <span class="sb-track-text">
+                <span class="sb-track-title">{track.title}</span>
+                {track.featured && <span class="sb-track-tag">★ FEATURED</span>}
+                {track.recordingLost && <span class="sb-track-tag sb-track-tag--warn">LOST</span>}
+              </span>
+              <span class="sb-track-dur">{track.durationHint ?? ''}</span>
+            </button>
+            <div class="sb-track-progress"><span></span></div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <div class="sb-section">
+    <h4 class="sb-heading">Navigate</h4>
+    <nav class="sb-nav">
+      {
+        sectionLinks.map((link) => (
+          <a class="sb-nav-link" href={`#${link.id}`} data-sb-nav-link data-section={link.id}>
+            <span class="sb-nav-dot" aria-hidden="true"></span>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+
+  <div class="sb-foot">
+    <div>APRIL 2026 · HARD PROBLEM · CLAUDE OPUS 4.6</div>
+  </div>
+</aside>
+
+<style>
+  .sb {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: var(--cream);
+    font-family: var(--serif);
+    padding: 1.5rem 1.1rem 2.25rem;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(107, 63, 160, 0.5) transparent;
+  }
+
+  .sb::-webkit-scrollbar {
+    width: 6px;
+  }
+  .sb::-webkit-scrollbar-thumb {
+    background: rgba(107, 63, 160, 0.4);
+    border-radius: 3px;
+  }
+
+  .sb-top {
+    display: flex;
+    gap: 0.9rem;
+    align-items: center;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(107, 63, 160, 0.15);
+  }
+
+  .sb-cover {
+    flex-shrink: 0;
+    display: block;
+    width: 72px;
+    height: 72px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(199, 75, 143, 0.3);
+    box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.7);
+    transition: transform 0.25s ease;
+  }
+
+  .sb-cover:hover {
+    transform: scale(1.03);
+  }
+
+  .sb-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .sb-meta {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .sb-artist {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--magenta);
+    text-transform: uppercase;
+  }
+
+  .sb-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--white);
+    font-size: 1.15rem;
+    line-height: 1.2;
+    margin: 0.25rem 0 0.45rem;
+  }
+
+  .sb-year {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: rgba(228, 224, 212, 0.4);
+  }
+
+  .sb-section {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid rgba(107, 63, 160, 0.12);
+  }
+
+  .sb-heading {
+    font-family: var(--mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.85rem;
+  }
+
+  .sb-tracks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .sb-track {
+    position: relative;
+    list-style: none;
+  }
+
+  .sb-track-btn {
+    display: grid;
+    grid-template-columns: 22px 16px 1fr auto;
+    gap: 0.55rem;
+    align-items: center;
+    width: 100%;
+    padding: 0.55rem 0.6rem;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+    transition: background 0.18s ease;
+  }
+
+  .sb-track-btn:hover {
+    background: rgba(107, 63, 160, 0.12);
+  }
+
+  .sb-track.is-lost .sb-track-btn {
+    cursor: not-allowed;
+  }
+
+  .sb-track.is-lost .sb-track-btn:hover {
+    background: rgba(232, 131, 58, 0.06);
+  }
+
+  .sb-num {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: rgba(107, 63, 160, 0.75);
+    letter-spacing: 0.08em;
+  }
+
+  .sb-track.is-active .sb-num {
+    color: var(--magenta);
+  }
+
+  .sb-track.is-featured .sb-num {
+    color: var(--gold);
+  }
+
+  .sb-icon {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    color: rgba(228, 224, 212, 0.55);
+    display: grid;
+    place-items: center;
+  }
+
+  .sb-icon .icn-pause,
+  .sb-icon .eq,
+  .sb-icon .icn-lost {
+    display: none;
+  }
+
+  .sb-track.is-lost .sb-icon .icn-play {
+    display: none;
+  }
+
+  .sb-track.is-lost .sb-icon .icn-lost {
+    display: block;
+    color: rgba(232, 131, 58, 0.6);
+  }
+
+  .sb-track.is-active .sb-icon .icn-play {
+    display: none;
+  }
+
+  .sb-track.is-active .sb-icon .eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 1px;
+    height: 11px;
+  }
+
+  .sb-track.is-active.is-paused .sb-icon .eq {
+    display: none;
+  }
+
+  .sb-track.is-active.is-paused .sb-icon .icn-play {
+    display: block;
+    color: var(--magenta);
+  }
+
+  .eq span {
+    display: block;
+    width: 2px;
+    background: var(--magenta);
+    animation: eq 0.9s ease-in-out infinite;
+  }
+  .eq span:nth-child(1) { height: 30%; animation-delay: 0s; }
+  .eq span:nth-child(2) { height: 70%; animation-delay: 0.15s; }
+  .eq span:nth-child(3) { height: 45%; animation-delay: 0.3s; }
+
+  @keyframes eq {
+    0%, 100% { transform: scaleY(0.4); }
+    50% { transform: scaleY(1.0); }
+  }
+
+  .sb-track-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .sb-track-title {
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    color: rgba(242, 239, 233, 0.82);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-style: italic;
+  }
+
+  .sb-track.is-active .sb-track-title {
+    color: var(--white);
+  }
+
+  .sb-track.is-featured .sb-track-title {
+    color: var(--gold);
+  }
+
+  .sb-track.is-lost .sb-track-title {
+    color: rgba(242, 239, 233, 0.45);
+    text-decoration: line-through;
+    text-decoration-color: rgba(232, 131, 58, 0.4);
+  }
+
+  .sb-track-tag {
+    font-family: var(--mono);
+    font-size: 0.45rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .sb-track-tag--warn {
+    color: var(--orange);
+  }
+
+  .sb-track-dur {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    color: rgba(228, 224, 212, 0.35);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sb-track-progress {
+    position: absolute;
+    left: 0.6rem;
+    right: 0.6rem;
+    bottom: 0.15rem;
+    height: 1px;
+    background: rgba(107, 63, 160, 0.18);
+    border-radius: 1px;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .sb-track.is-active .sb-track-progress {
+    opacity: 1;
+  }
+
+  .sb-track-progress span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--purple), var(--magenta), var(--orange));
+    transition: width 0.1s linear;
+  }
+
+  .sb-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+  }
+
+  .sb-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.45rem 0.6rem;
+    font-family: var(--serif);
+    font-size: 0.88rem;
+    color: rgba(228, 224, 212, 0.58);
+    text-decoration: none;
+    border-radius: 3px;
+    transition: background 0.18s ease, color 0.18s ease;
+    font-style: italic;
+  }
+
+  .sb-nav-link:hover {
+    background: rgba(107, 63, 160, 0.1);
+    color: var(--white);
+  }
+
+  .sb-nav-link.is-active {
+    color: var(--white);
+  }
+
+  .sb-nav-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(107, 63, 160, 0.4);
+    flex-shrink: 0;
+    transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .sb-nav-link.is-active .sb-nav-dot {
+    background: var(--magenta);
+    transform: scale(1.4);
+    box-shadow: 0 0 6px rgba(199, 75, 143, 0.8);
+  }
+
+  .sb-foot {
+    margin-top: auto;
+    padding-top: 1.25rem;
+    font-family: var(--mono);
+    font-size: 0.48rem;
+    letter-spacing: 0.2em;
+    color: rgba(228, 224, 212, 0.25);
+    line-height: 1.7;
+  }
+</style>
+
+<script>
+  function wire() {
+    const sb = document.querySelector<HTMLElement>('[data-album-sidebar]');
+    if (!sb) return;
+
+    const rows = Array.from(sb.querySelectorAll<HTMLElement>('[data-sb-row]'));
+    const rowsById = new Map<string, HTMLElement>();
+    for (const row of rows) {
+      const id = row.dataset.trackId;
+      if (id) rowsById.set(id, row);
+    }
+
+    // Click to play / pause
+    for (const row of rows) {
+      const btn = row.querySelector<HTMLButtonElement>('.sb-track-btn');
+      if (!btn) continue;
+      btn.addEventListener('click', async () => {
+        const id = row.dataset.trackId;
+        if (!id || row.classList.contains('is-lost')) return;
+
+        const audio = document.querySelector<HTMLAudioElement>(`audio[data-track-id="${id}"]`);
+        if (!audio) return;
+
+        // Toggle play/pause; only scroll on a new play
+        if (audio.paused) {
+          // Stop every other audio and any running tool first (prevents layout thrash mid-scroll)
+          document.querySelectorAll<HTMLAudioElement>('audio').forEach((a) => {
+            if (a !== audio && !a.paused) a.pause();
+          });
+          document.dispatchEvent(new CustomEvent('hp:stop-all'));
+          try {
+            await audio.play();
+          } catch {
+            /* ignore */
+          }
+          // Scroll AFTER play so any layout changes (player canvas sizing) are already applied.
+          // Use direct scrollTo instead of scrollIntoView because sticky sidebars throw off the latter.
+          const anchor = document.getElementById(`track-${id}`);
+          if (anchor) {
+            requestAnimationFrame(() => {
+              const targetY = anchor.getBoundingClientRect().top + window.scrollY - 32;
+              window.scrollTo({ top: targetY, behavior: 'smooth' });
+            });
+          }
+        } else {
+          audio.pause();
+        }
+      });
+    }
+
+    // Sync row visual state with audio element events
+    function findRow(a: HTMLAudioElement): HTMLElement | null {
+      const id = a.dataset.trackId;
+      return id ? rowsById.get(id) ?? null : null;
+    }
+
+    function setActive(id: string, active: boolean) {
+      for (const row of rows) {
+        if (row.dataset.trackId === id) {
+          row.classList.toggle('is-active', active);
+          if (!active) row.classList.remove('is-paused');
+        } else if (active) {
+          row.classList.remove('is-active', 'is-paused');
+        }
+      }
+    }
+
+    const audios = Array.from(document.querySelectorAll<HTMLAudioElement>('audio[data-track-id]'));
+    for (const a of audios) {
+      a.addEventListener('play', () => {
+        const id = a.dataset.trackId;
+        if (id) setActive(id, true);
+        const row = findRow(a);
+        row?.classList.remove('is-paused');
+      });
+      a.addEventListener('pause', () => {
+        const row = findRow(a);
+        if (!row) return;
+        if (a.currentTime === 0 || a.ended) {
+          row.classList.remove('is-active', 'is-paused');
+        } else {
+          row.classList.add('is-paused');
+        }
+      });
+      a.addEventListener('ended', () => {
+        const row = findRow(a);
+        row?.classList.remove('is-active', 'is-paused');
+        const fill = row?.querySelector<HTMLElement>('.sb-track-progress span');
+        if (fill) fill.style.width = '0%';
+      });
+      a.addEventListener('timeupdate', () => {
+        const row = findRow(a);
+        if (!row) return;
+        const fill = row.querySelector<HTMLElement>('.sb-track-progress span');
+        if (!fill) return;
+        const dur = a.duration || 0;
+        const pct = dur > 0 ? (a.currentTime / dur) * 100 : 0;
+        fill.style.width = `${pct}%`;
+      });
+    }
+
+    // Section nav active-state via IntersectionObserver
+    const navLinks = Array.from(sb.querySelectorAll<HTMLAnchorElement>('[data-sb-nav-link]'));
+    const navById = new Map<string, HTMLAnchorElement>();
+    for (const link of navLinks) {
+      const id = link.dataset.section;
+      if (id) navById.set(id, link);
+    }
+
+    const sectionIds = Array.from(navById.keys());
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (sections.length > 0 && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          // Pick the entry nearest the top that is intersecting
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+          if (visible.length > 0) {
+            const activeId = visible[0].target.id;
+            navLinks.forEach((l) => l.classList.toggle('is-active', l.dataset.section === activeId));
+          }
+        },
+        { rootMargin: '-20% 0px -70% 0px', threshold: 0 },
+      );
+      sections.forEach((s) => observer.observe(s));
+    }
+
+    // Smooth scroll for nav links — direct scrollTo, not scrollIntoView
+    for (const link of navLinks) {
+      link.addEventListener('click', (e) => {
+        const id = link.dataset.section;
+        if (!id) return;
+        const target = document.getElementById(id);
+        if (!target) return;
+        e.preventDefault();
+        const targetY = target.getBoundingClientRect().top + window.scrollY - 32;
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wire);
+  } else {
+    wire();
+  }
+</script>

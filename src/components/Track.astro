@@ -11,7 +11,7 @@ interface Props {
 const { track, hueShift = 0 } = Astro.props;
 ---
 
-<div class="track">
+<div class="track" id={`track-${track.id}`}>
   <div class="track-number">{track.number}</div>
   <div class="track-title">{track.title}</div>
   <div class="track-meta">{track.meta}</div>
@@ -22,7 +22,7 @@ const { track, hueShift = 0 } = Astro.props;
   }
   <p class="track-description">{track.description}</p>
 
-  <AudioPlayer src={track.audio} label={track.title} hueShift={hueShift} />
+  <AudioPlayer src={track.audio} label={track.title} trackId={track.id} hueShift={hueShift} />
 
   <Spectrogram src={track.spectrogram} alt={track.spectrogramAlt} trackTitle={track.title} />
 </div>

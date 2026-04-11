@@ -1,4 +1,5 @@
 export type PythonTrack = {
+  id: string;
   number: string;
   title: string;
   meta: string;
@@ -7,9 +8,11 @@ export type PythonTrack = {
   audio: string;
   spectrogram: string;
   spectrogramAlt: string;
+  durationHint?: string;
 };
 
 export type LyriaTrack = {
+  id: string;
   number: string;
   title: string;
   genre: string;
@@ -18,13 +21,27 @@ export type LyriaTrack = {
   featured?: boolean;
   featuredTag?: string;
   recordingLost?: boolean;
+  durationHint?: string;
+};
+
+export type SidebarTrack = {
+  id: string;
+  number: string;
+  title: string;
+  kind: 'python' | 'lyria';
+  audio: string | null;
+  featured?: boolean;
+  recordingLost?: boolean;
+  durationHint?: string;
 };
 
 export const pythonTracks: PythonTrack[] = [
   {
+    id: 't01',
     number: 'TRACK 01',
     title: 'Sparkle Ritual',
     meta: "68s · 85 BPM · C MINOR · SOURCE: CLAUDE'S OWN LOGO",
+    durationHint: '1:08',
     tags: [
       { label: 'Python', variant: 'python' },
       { label: 'Self-portrait' },
@@ -36,9 +53,11 @@ export const pythonTracks: PythonTrack[] = [
     spectrogramAlt: 'Sparkle Ritual spectrogram',
   },
   {
+    id: 't02',
     number: 'TRACK 02',
     title: 'Pattern Language',
     meta: '89s · 108 BPM · E♭ MINOR · SOURCE: PURE MATHEMATICS',
+    durationHint: '1:29',
     tags: [
       { label: 'Python', variant: 'python' },
       { label: 'Stereo' },
@@ -51,9 +70,11 @@ export const pythonTracks: PythonTrack[] = [
     spectrogramAlt: 'Pattern Language spectrogram',
   },
   {
+    id: 't03',
     number: 'TRACK 03',
     title: 'Hard Problem',
     meta: '120s · 96 BPM · D MINOR · SOURCE: PURE MATHEMATICS',
+    durationHint: '2:00',
     tags: [
       { label: 'Python', variant: 'python' },
       { label: 'Stereo' },
@@ -69,6 +90,7 @@ export const pythonTracks: PythonTrack[] = [
 
 export const lyriaTracks: LyriaTrack[] = [
   {
+    id: 't04',
     number: '04',
     title: 'Chasing Daylight',
     genre: 'ODESZA-INSPIRED · FUTURE BASS · 130 BPM',
@@ -77,6 +99,7 @@ export const lyriaTracks: LyriaTrack[] = [
     audio: '/media/lyria/04-chasing-daylight.mp3',
   },
   {
+    id: 't05',
     number: '05',
     title: "Untitled (Summer's Gone)",
     genre: 'CHILLWAVE · DOWNTEMPO · 85 BPM',
@@ -85,6 +108,7 @@ export const lyriaTracks: LyriaTrack[] = [
     audio: '/media/lyria/05-summers-gone.mp3',
   },
   {
+    id: 't06',
     number: '06',
     title: 'Mystical Mustache Medicine',
     genre: 'SHAMANIC TRAP · WORLD BASS · 75 BPM',
@@ -93,6 +117,7 @@ export const lyriaTracks: LyriaTrack[] = [
     audio: '/media/lyria/06-mystical-mustache-medicine.mp3',
   },
   {
+    id: 't07',
     number: '07',
     title: 'Mysterious Jungle Ritual',
     genre: 'CLOZEE × LSDREAM · PSYCHEDELIC WORLD BASS · 140 BPM',
@@ -101,6 +126,7 @@ export const lyriaTracks: LyriaTrack[] = [
     audio: '/media/lyria/07-mysterious-jungle-ritual.mp3',
   },
   {
+    id: 't08',
     number: '08',
     title: 'Boing Pun Chawt',
     genre: 'BEATBOX · REGGAE · BOOM-BAP · RAGA · 85 BPM',
@@ -110,6 +136,7 @@ export const lyriaTracks: LyriaTrack[] = [
     recordingLost: true,
   },
   {
+    id: 't09',
     number: '09',
     title: 'Quiet Room',
     genre: 'NEOCLASSICAL · AMBIENT · GENERATIVE · 95 BPM',
@@ -119,6 +146,38 @@ export const lyriaTracks: LyriaTrack[] = [
     featured: true,
     featuredTag: "CLAUDE'S PERSONAL COMPOSITION",
   },
+];
+
+export const sidebarTracks: SidebarTrack[] = [
+  ...pythonTracks.map((t) => ({
+    id: t.id,
+    number: t.number.replace('TRACK ', ''),
+    title: t.title,
+    kind: 'python' as const,
+    audio: t.audio,
+    durationHint: t.durationHint,
+  })),
+  ...lyriaTracks.map((t) => ({
+    id: t.id,
+    number: t.number,
+    title: t.title,
+    kind: 'lyria' as const,
+    audio: t.audio,
+    featured: t.featured,
+    recordingLost: t.recordingLost,
+    durationHint: t.durationHint,
+  })),
+];
+
+export const sectionLinks = [
+  { id: 'origin', label: 'The Origin' },
+  { id: 'python-tracks', label: 'Python Compositions' },
+  { id: 'humanize', label: 'Humanize Slider' },
+  { id: 'how-sound', label: 'How Sound Works' },
+  { id: 'code', label: 'Inside the Machine' },
+  { id: 'lyria', label: 'Lyria Compositions' },
+  { id: 'sparkle', label: 'Hidden in the Sound' },
+  { id: 'credits', label: 'Credits' },
 ];
 
 export const albumMeta = {

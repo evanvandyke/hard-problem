@@ -17,12 +17,16 @@
 
 html { scroll-behavior: smooth; }
 
+html {
+  overflow-x: clip;
+}
+
 body {
   background: var(--black);
   color: var(--cream);
   font-family: var(--serif);
   line-height: 1.7;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 ::selection {

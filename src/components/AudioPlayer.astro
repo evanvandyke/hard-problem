@@ -2,11 +2,13 @@
 interface Props {
   src: string;
   label?: string;
+  /** Stable id so the sidebar can reference this track's audio element */
+  trackId?: string;
   /** Optional seed tint for the spectrum bars in degrees of hue rotation */
   hueShift?: number;
 }
 
-const { src, label = 'audio', hueShift = 0 } = Astro.props;
+const { src, label = 'audio', trackId, hueShift = 0 } = Astro.props;
 ---
 
 <div class="hp-player" data-hp-player data-hue={hueShift}>
@@ -30,7 +32,7 @@ const { src, label = 'audio', hueShift = 0 } = Astro.props;
 
   <span class="hp-time"><span class="hp-time-cur">0:00</span> / <span class="hp-time-dur">0:00</span></span>
 
-  <audio preload="metadata" crossorigin="anonymous" src={src} data-title={label}></audio>
+  <audio preload="metadata" crossorigin="anonymous" src={src} data-title={label} data-track-id={trackId}></audio>
 </div>
 
 <style>

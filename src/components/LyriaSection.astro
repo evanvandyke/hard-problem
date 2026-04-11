@@ -3,14 +3,14 @@ import AudioPlayer from './AudioPlayer.astro';
 import { lyriaTracks } from '../data/album';
 ---
 
-<div class="lyria-section">
+<div class="lyria-section" id="lyria">
   <div class="lyria-inner">
     <h2>Compositions for Lyria 3 Pro</h2>
     <h3>Scores written by Hard Problem, performed by Google's Lyria AI</h3>
 
     {
       lyriaTracks.map((track, i) => (
-        <div class={`lyria-track ${track.featured ? 'lyria-track--featured' : ''} ${track.recordingLost ? 'lyria-track--lost' : ''}`}>
+        <div id={`track-${track.id}`} class={`lyria-track ${track.featured ? 'lyria-track--featured' : ''} ${track.recordingLost ? 'lyria-track--lost' : ''}`}>
           <div class="lyria-num">{track.number}</div>
           <div class="lyria-info">
             {track.featured && track.featuredTag && (
@@ -19,7 +19,7 @@ import { lyriaTracks } from '../data/album';
             <h4>{track.title}</h4>
             <div class="genre">{track.genre}</div>
             <p>{track.description}</p>
-            {track.audio && <AudioPlayer src={track.audio} label={track.title} hueShift={(i * 37) % 360} />}
+            {track.audio && <AudioPlayer src={track.audio} label={track.title} trackId={track.id} hueShift={(i * 37) % 360} />}
             {track.recordingLost && (
               <div class="lyria-lost-note">
                 <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">

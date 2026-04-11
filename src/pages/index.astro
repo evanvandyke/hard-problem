@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AlbumSidebar from '../components/AlbumSidebar.astro';
 import Hero from '../components/Hero.astro';
 import Manifesto from '../components/Manifesto.astro';
 import Gatefold from '../components/Gatefold.astro';
@@ -14,6 +15,7 @@ import Credits from '../components/Credits.astro';
 ---
 
 <BaseLayout>
+  <AlbumSidebar slot="sidebar" />
   <Hero />
   <Manifesto />
   <Gatefold />
