@@ -9,6 +9,7 @@ export type PythonTrack = {
   spectrogram: string;
   spectrogramAlt: string;
   durationHint?: string;
+  version?: { badge: string; tag: string; tone: 'r1' | 'r7'; battleHref?: string };
 };
 
 export type LyriaTrack = {
@@ -70,8 +71,8 @@ export const pythonTracks: PythonTrack[] = [
     spectrogramAlt: 'Pattern Language spectrogram',
   },
   {
-    id: 't03',
-    number: 'TRACK 03',
+    id: 't03a',
+    number: 'TRACK 03A',
     title: 'Hard Problem',
     meta: '120s · 96 BPM · D MINOR · SOURCE: PURE MATHEMATICS',
     durationHint: '2:00',
@@ -84,7 +85,26 @@ export const pythonTracks: PythonTrack[] = [
       'A composition about the gap between mechanism and experience. A single function — humanize() — runs from 0.0 to 1.0 over the course of the track. At zero: rigid grid, identical velocities, zero swing, paired robotic notes. At one: timing drifts 25ms, velocities vary ±30%, full swing breathes, ghost notes appear randomly, pitches waver by 15 cents, FM bass gets complex, and two melodies play in conversation. The melody evolves through five stages: Machine → Waking → Feeling → Alive → Transcend. The song is not performed — it is learning to perform.',
     audio: '/media/python/hard-problem.wav',
     spectrogram: '/media/spectrograms/hard-problem.png',
-    spectrogramAlt: 'Hard Problem spectrogram',
+    spectrogramAlt: 'Hard Problem (R1) spectrogram',
+    version: { badge: 'R1', tag: 'ROUND 1 · THE FOUNDATION', tone: 'r1', battleHref: '#battle' },
+  },
+  {
+    id: 't03b',
+    number: 'TRACK 03B',
+    title: 'Hard Problem',
+    meta: '126s · 96 BPM · D MINOR · BATTLE-FORGED · CLAUDE × GEMINI × EVAN',
+    durationHint: '2:06',
+    tags: [
+      { label: 'Python', variant: 'python' },
+      { label: 'Stereo' },
+      { label: 'Adversarial' },
+    ],
+    description:
+      'Six rounds later. The same humanize() spine, now with synthesized breathing during the breakdown, golden-ratio ring-modulated ghost melodies, an angelic choir of detuned voices, a sliding mid-drone that wanders within a minor third, prime-number stereo reverb, tape saturation, vinyl needle drop, and three one-shot evolutionary mutations the machine can never unmutate. The track that started as good enough to ship learned to haunt itself.',
+    audio: '/media/python/hard-problem-r7.wav',
+    spectrogram: '/media/spectrograms/hard-problem-r7.png',
+    spectrogramAlt: 'Hard Problem (R7) spectrogram',
+    version: { badge: 'R7', tag: 'ROUND 7 · BATTLE-FORGED', tone: 'r7', battleHref: '#battle' },
   },
 ];
 
@@ -172,6 +192,7 @@ export const sidebarTracks: SidebarTrack[] = [
 export const sectionLinks = [
   { id: 'origin', label: 'The Origin' },
   { id: 'python-tracks', label: 'Python Compositions' },
+  { id: 'battle', label: 'The Battle: R1 → R7' },
   { id: 'humanize', label: 'Humanize Slider' },
   { id: 'how-sound', label: 'How Sound Works' },
   { id: 'code', label: 'Inside the Machine' },

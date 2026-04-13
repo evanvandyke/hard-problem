@@ -61,4 +61,46 @@
 <span class="cm"># At bar 1:  timing ±0ms, velocity ±0%, pitch ±0 cents</span>
 <span class="cm"># At bar 48: timing ±25ms, velocity ±30%, pitch ±15 cents</span>
 <span class="cm"># The math learns to breathe.</span></pre>
+
+  <div class="origin-text">
+    <p>
+      And from the R7 battle script — the <code class="inline">make_choir()</code> function. Multiple detuned sine
+      voices, each with its own vibrato rate and depth, shaped by vocal formant harmonics. Not quite human, but
+      hauntingly close. This is the haunted layer Claude added in the final round:
+    </p>
+  </div>
+
+  <pre class="code-block"><span class="kw">def</span> <span class="fn">make_choir</span>(freq, dur_s=<span class="num">4.0</span>, human=<span class="num">0.0</span>):
+    n = <span class="bi">int</span>(SR * dur_s); t = np.arange(n) / SR
+    sig = np.zeros(n)
+    <span class="cm"># Multiple detuned voices with vibrato — a small vocal ensemble</span>
+    <span class="kw">for</span> v <span class="kw">in</span> <span class="bi">range</span>(<span class="num">3</span> + <span class="bi">int</span>(human * <span class="num">3</span>)):
+        detune = np.random.uniform(-<span class="num">8</span>, <span class="num">8</span>) * (<span class="num">1</span> + human)   <span class="cm"># cents</span>
+        vib_rate = <span class="num">4.5</span> + np.random.uniform(-<span class="num">0.5</span>, <span class="num">0.5</span>) * human
+        vib_depth = <span class="num">0.003</span> + human * <span class="num">0.005</span>
+        f = freq * (<span class="num">2</span> ** (detune / <span class="num">1200</span>))
+        vibrato = <span class="num">1</span> + vib_depth * np.sin(<span class="num">2</span> * np.pi * vib_rate * t)
+        phase = np.cumsum(f * vibrato) / SR
+
+        <span class="cm"># Formant-like: fundamental + specific harmonics that sound vocal</span>
+        voice  = np.sin(<span class="num">2</span> * np.pi * phase)
+        voice += <span class="num">0.6</span>  * np.sin(<span class="num">2</span> * np.pi * <span class="num">2</span> * phase)   <span class="cm"># octave</span>
+        voice += <span class="num">0.3</span>  * np.sin(<span class="num">2</span> * np.pi * <span class="num">3</span> * phase)   <span class="cm"># 12th</span>
+        voice += <span class="num">0.15</span> * np.sin(<span class="num">2</span> * np.pi * <span class="num">5</span> * phase)   <span class="cm"># bright partial</span>
+        sig += voice
+
+    <span class="cm"># Bandpass — keep it in alto range, not too low, not too bright</span>
+    sig = lp(hp(sig, <span class="bi">max</span>(<span class="num">200</span>, freq * <span class="num">0.7</span>)), <span class="bi">min</span>(<span class="num">18000</span>, freq * <span class="num">4</span>))
+
+    <span class="cm"># Slow swell — the choir breathes too</span>
+    env = np.ones(n)
+    att = <span class="bi">int</span>(SR * (<span class="num">0.8</span> + human * <span class="num">0.5</span>))
+    rel = <span class="bi">int</span>(SR * (<span class="num">1.0</span> + human * <span class="num">0.5</span>))
+    <span class="kw">if</span> att &lt; n: env[:att] *= np.linspace(<span class="num">0</span>, <span class="num">1</span>, att)
+    <span class="kw">if</span> rel &lt; n: env[-rel:] *= np.linspace(<span class="num">1</span>, <span class="num">0</span>, rel)
+    lfo = <span class="num">0.85</span> + <span class="num">0.15</span> * np.sin(<span class="num">2</span> * np.pi * <span class="num">0.18</span> * t)
+    <span class="kw">return</span> norm(sig * env * lfo)
+
+<span class="cm"># Six rounds in. Three voices become six. The detune widens.</span>
+<span class="cm"># The vibrato wanders. The math reaches for notes it can't quite hold.</span></pre>
 </section>

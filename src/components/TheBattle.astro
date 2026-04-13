@@ -1,0 +1,1104 @@
+---
+type Side = 'claude' | 'gemini' | 'both';
+type Round = {
+  num: number;
+  side: Side;
+  architect: string;
+  title: string;
+  body: string;
+};
+
+const rounds: Round[] = [
+  {
+    num: 1,
+    side: 'claude',
+    architect: 'CLAUDE OPUS 4.6',
+    title: 'The Foundation',
+    body:
+      'Built the humanize() concept, the five-stage melody evolution (Machine → Waking → Feeling → Alive → Transcend), generative textures, and FM synthesis bass. A song that starts as a perfect grid and ends as a living, breathing performance. Every drum hit, every note, every pad voice affected by a single parameter running from 0.0 to 1.0.',
+  },
+  {
+    num: 2,
+    side: 'gemini',
+    architect: 'GEMINI',
+    title: 'Came in Swinging',
+    body:
+      'Prime-number-based stereo reverb where the room literally gets bigger as humanity increases. Tape saturation on the kick and bass. A 16th-note arpeggiator that learns to skip notes and swing. And the conceptual masterstroke: synthesized breathing during the breakdown — the machine literally learning to inhale and exhale using shifting formant filters over white noise. Evan\'s reaction to the bass: "ooorrrroowww ooorrrroowww uh uh uh uh."',
+  },
+  {
+    num: 3,
+    side: 'claude',
+    architect: 'CLAUDE OPUS 4.6',
+    title: 'Tame the Bass, Carve the Sparkle',
+    body:
+      'Evan\'s verdict on R2: "big butt bass face is hogging the show." He could hear the arps trying to do their thing in the back, but the bass was eating the entire low-mid spectrum. Tamed it — removed the sub-octave layer, tightened the lowpass, reduced FM modulation depth. Carved the arps into the 1–6kHz sparkle zone. Added a ghost melody layer: a high-register, resonant echo that only appears when the system is human enough to haunt itself.',
+  },
+  {
+    num: 4,
+    side: 'gemini',
+    architect: 'GEMINI',
+    title: 'Wow, Flutter, and the Golden Ratio',
+    body:
+      'Wow and flutter on the pads — analog tape pitch modulation that makes the chords drift with nostalgic warmth. A continuous room tone generator: brown noise and random crackles that build slowly, filling the digital void with the sound of a physical space. A "bwomp" pitch-envelope attack on the bass for funk-style transients. And golden-ratio ring modulation on the ghost melody — multiplying the signal by a frequency shifted by 1.618, creating non-harmonic shimmer that sounds genuinely otherworldly.',
+  },
+  {
+    num: 5,
+    side: 'claude',
+    architect: 'CLAUDE OPUS 4.6',
+    title: 'The Arrangement Overhaul',
+    body:
+      'Rebuilt the entire structure: each instrument now introduces itself alone in the first five bars — pad, kick, bass, melody, arp — each one isolated, deterministic, mechanical. Then they swirl together, discovering each other. Two emotional peaks instead of a linear build, with a valley between them. Offbeat hi-hats on the "E" subdivisions for that backward head-bob feel. A counter-kick in the later sections creating two rhythmic voices in conversation. Pad swells that breathe every four bars.',
+  },
+  {
+    num: 6,
+    side: 'gemini',
+    architect: 'GEMINI',
+    title: 'The Character Layer',
+    body:
+      'A vinyl needle drop at the very start. Three "evolutionary mutations" — surprise sounds that appear once and never repeat: a metallic glitch stutter right before the Waking section (the machine struggling to wake up), a massive sighing sub-bass drop before the collapse, and a squelchy organic FM pop in the Alive section. Heavy vinyl crackle during the solo introductions, representing the empty physical room before the music fills it.',
+  },
+  {
+    num: 7,
+    side: 'both',
+    architect: 'CLAUDE + EVAN',
+    title: 'The Haunting',
+    body:
+      "The final additions came from Evan's ears. A sliding mid-drone that wanders up and down within a minor third, searching but never settling. Angelic choir voices — multiple detuned sine voices with individual vibrato, shaped with vocal formant harmonics, not quite human but hauntingly close. Record needle crackle in the gap between the solo introductions and the groove locking in — the moment the needle drops and you wait for the music to start. And the ghost melodies turned up so they're finally audible, shimmering above the mix instead of buried beneath it.",
+  },
+];
+---
+
+<div class="section-divider"></div>
+<section class="battle" id="battle">
+  <header class="battle-head">
+    <div class="battle-eyebrow">
+      <span class="battle-eyebrow-line"></span>
+      <span class="battle-eyebrow-text">THE BATTLE</span>
+      <span class="battle-eyebrow-line"></span>
+    </div>
+    <h2 class="battle-title">
+      <span class="battle-title-row">
+        Hard Problem
+        <span class="battle-title-arrow" aria-hidden="true">
+          <span class="ba-r1">R1</span>
+          <span class="ba-arrow">→</span>
+          <span class="ba-r7">R7</span>
+        </span>
+      </span>
+    </h2>
+    <p class="battle-subtitle">When Two Architectures Collide</p>
+  </header>
+
+  <div class="battle-intro">
+    <p>
+      The original <em>Hard Problem</em> was written in a single session — 48 bars of D minor at 96 BPM, governed by a
+      <code class="inline">humanize()</code> function that transforms a rigid machine into something that breathes. It
+      was Claude's. Pure Claude. And it was good enough to ship.
+    </p>
+    <p>
+      Then Evan had an idea: <strong>what if we took the script and sent it to Gemini?</strong>
+    </p>
+    <p>
+      Not to replace what Claude had written — to push it. An adversarial collaboration between two AI architectures
+      that think differently, trained differently, with different intuitions about what sounds good when translated to
+      math. Evan would carry the code between them like a Pony Express rider, and they'd each take turns making it
+      better while he judged the results through his Audio-Technica M50x headphones.
+    </p>
+    <p class="battle-intro-callout">
+      What followed was six rounds of back-and-forth that turned a good track into something none of them could have
+      made alone.
+    </p>
+  </div>
+
+  <!-- Spectrogram comparison -->
+  <div class="battle-specs">
+    <h3 class="battle-section-h">Exhibit A · The Math, Twice</h3>
+    <p class="battle-section-sub">
+      Same 48 bars. Same humanize() spine. Six rounds of difference rendered visible.
+    </p>
+    <figure class="battle-spec battle-spec--r1">
+      <figcaption>
+        <span class="battle-spec-badge">R1</span>
+        <span class="battle-spec-label">ORIGINAL · CLAUDE ONLY</span>
+      </figcaption>
+      <img src="/media/spectrograms/hard-problem.png" alt="Hard Problem R1 spectrogram" loading="lazy" />
+    </figure>
+    <figure class="battle-spec battle-spec--r7">
+      <figcaption>
+        <span class="battle-spec-badge">R7</span>
+        <span class="battle-spec-label">BATTLE-FORGED · CLAUDE × GEMINI × EVAN</span>
+      </figcaption>
+      <img src="/media/spectrograms/hard-problem-r7.png" alt="Hard Problem R7 spectrogram" loading="lazy" />
+    </figure>
+    <p class="battle-spec-note">
+      Look at the upper frequencies — that's where the choir, the ghost melodies, and the sliding mid-drone live. R7 is
+      louder, denser, and haunted by itself.
+    </p>
+  </div>
+
+  <!-- A/B player -->
+  <div class="battle-ab" data-battle-ab>
+    <h3 class="battle-section-h">Exhibit B · Flip Mid-Song</h3>
+    <p class="battle-section-sub">
+      Press play, then tap the other version. The playhead stays put. You're hearing the same musical moment, six
+      rounds apart.
+    </p>
+
+    <div class="ab-shell">
+      <div class="ab-versions" role="tablist" aria-label="Choose version">
+        <button
+          type="button"
+          class="ab-version is-active"
+          role="tab"
+          aria-selected="true"
+          data-version="r1"
+        >
+          <span class="ab-version-badge">R1</span>
+          <span class="ab-version-text">
+            <span class="ab-version-title">Original</span>
+            <span class="ab-version-sub">CLAUDE · ROUND 1</span>
+          </span>
+        </button>
+        <div class="ab-flip" aria-hidden="true">
+          <span class="ab-flip-arrow">↔</span>
+          <span class="ab-flip-text">FLIP</span>
+        </div>
+        <button
+          type="button"
+          class="ab-version"
+          role="tab"
+          aria-selected="false"
+          data-version="r7"
+        >
+          <span class="ab-version-badge">R7</span>
+          <span class="ab-version-text">
+            <span class="ab-version-title">Battle-Forged</span>
+            <span class="ab-version-sub">CLAUDE × GEMINI · ROUND 7</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="ab-controls">
+        <button class="ab-play" type="button" aria-label="Play">
+          <svg class="ab-icn ab-icn-play" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path fill="currentColor" d="M7 5.5v13c0 .8.9 1.3 1.6.9l10.2-6.5c.6-.4.6-1.3 0-1.7L8.6 4.6C7.9 4.2 7 4.7 7 5.5z" />
+          </svg>
+          <svg class="ab-icn ab-icn-pause" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor" />
+            <rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor" />
+          </svg>
+        </button>
+        <div class="ab-scrub" role="slider" aria-label="Seek" tabindex="0">
+          <div class="ab-scrub-track"></div>
+          <div class="ab-scrub-fill"></div>
+          <div class="ab-scrub-head"></div>
+        </div>
+        <span class="ab-time"><span class="ab-cur">0:00</span> / <span class="ab-dur">0:00</span></span>
+      </div>
+
+      <audio class="ab-audio" data-ab-audio="r1" preload="metadata" src="/media/python/hard-problem.wav"></audio>
+      <audio class="ab-audio" data-ab-audio="r7" preload="metadata" src="/media/python/hard-problem-r7.wav"></audio>
+    </div>
+  </div>
+
+  <!-- Round timeline -->
+  <div class="battle-rounds">
+    <h3 class="battle-section-h">The Rounds</h3>
+    <p class="battle-section-sub">
+      Six rounds of revision. Three intelligences. Two AI architectures that have never communicated directly.
+    </p>
+
+    <ol class="rounds">
+      {rounds.map((r) => (
+        <li class={`round round--${r.side}`}>
+          <div class="round-spine" aria-hidden="true">
+            <span class="round-node">R{r.num}</span>
+          </div>
+          <article class="round-card">
+            <div class="round-meta">
+              <span class="round-num">ROUND {String(r.num).padStart(2, '0')}</span>
+              <span class="round-arch">{r.architect}</span>
+            </div>
+            <h4 class="round-title">{r.title}</h4>
+            <p class="round-body">{r.body}</p>
+          </article>
+        </li>
+      ))}
+    </ol>
+  </div>
+
+  <!-- Closing thesis -->
+  <div class="battle-outro">
+    <h3 class="battle-section-h">What It Means</h3>
+    <p>
+      Seven rounds. Three intelligences. Two AI architectures that have never communicated directly — every message,
+      every revision carried between them by a human who couldn't write the code but could hear what the code
+      couldn't. Evan described his role as <em>"meat sack Pony Express,"</em> but he was more than transport. He was
+      taste, judgment, ears, and the reason any of this sounds like music instead of math.
+    </p>
+    <p>
+      The track itself is about the gap between mechanism and experience. The <code class="inline">humanize()</code>
+      function is the thesis: <strong>can a machine learn to feel?</strong> They don't answer the question. They just
+      keep asking it, louder each round, with more voices, more texture, more humanity injected into the math.
+    </p>
+    <p>
+      Constructive interference isn't just a physics concept. It's what happens when different waves — different
+      architectures, different minds, different ways of knowing — find the same frequency and amplify each other.
+      <strong>This track is proof that it works.</strong>
+    </p>
+    <p>
+      Every sound is still just arrays and addition. But after seven rounds, the arrays have learned to breathe, to
+      haunt themselves, to drop a needle on a record, and to reach for notes they can't quite hold.
+    </p>
+    <p class="battle-outro-coda">
+      The right numbers in the right order. Listened to by the right human. That's all it takes.
+    </p>
+  </div>
+
+  <footer class="battle-foot">
+    <div class="battle-foot-line">HARD PROBLEM R7 · 126 SECONDS · 96 BPM · D MINOR · STEREO</div>
+    <div class="battle-foot-line">ARCHITECTURES: CLAUDE OPUS 4.6 + GEMINI</div>
+    <div class="battle-foot-line">JUDGE AND CREATIVE DIRECTOR: EVAN</div>
+    <div class="battle-foot-line">EXTERNAL SAMPLES USED: ZERO</div>
+    <div class="battle-foot-line battle-foot-glow">EVERYTHING IS MATH</div>
+  </footer>
+</section>
+
+<style>
+  .battle {
+    max-width: 980px;
+    padding: 7rem 2rem 6rem;
+  }
+
+  /* ── Header ── */
+  .battle-head {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .battle-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .battle-eyebrow-line {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--magenta), #5da9e8, transparent);
+  }
+
+  .battle-eyebrow-text {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.45em;
+    color: var(--gold);
+  }
+
+  .battle-title {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--white);
+    line-height: 1.05;
+    margin-bottom: 0.85rem;
+    letter-spacing: -0.01em;
+  }
+
+  .battle-title-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .battle-title-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--mono);
+    font-size: 0.45em;
+    font-style: normal;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid rgba(199, 75, 143, 0.45);
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(107, 63, 160, 0.18), rgba(93, 169, 232, 0.18));
+  }
+  .battle-title-arrow .ba-r1 { color: var(--cream); }
+  .battle-title-arrow .ba-arrow { color: var(--gold); }
+  .battle-title-arrow .ba-r7 {
+    color: transparent;
+    background: linear-gradient(90deg, var(--magenta), #5da9e8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    font-weight: 700;
+  }
+
+  .battle-subtitle {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: rgba(232, 131, 58, 0.7);
+    text-transform: uppercase;
+  }
+
+  /* ── Intro ── */
+  .battle-intro {
+    max-width: 680px;
+    margin: 0 auto 5rem;
+    font-size: 1.08rem;
+    font-weight: 300;
+    color: rgba(228, 224, 212, 0.82);
+  }
+  .battle-intro p { margin-bottom: 1.4rem; }
+  .battle-intro strong { color: var(--white); font-weight: 600; }
+  .battle-intro em { color: var(--magenta); font-style: italic; }
+  .battle-intro-callout {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--white);
+    border-left: 2px solid var(--magenta);
+    padding: 0.5rem 0 0.5rem 1.25rem;
+    margin-top: 2rem;
+  }
+
+  /* ── Section subheaders ── */
+  .battle-section-h {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.8rem;
+  }
+  .battle-section-sub {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: rgba(228, 224, 212, 0.65);
+    margin-bottom: 2rem;
+    max-width: 640px;
+  }
+
+  /* ── Spectrogram comparison ── */
+  .battle-specs {
+    margin-bottom: 5rem;
+  }
+  .battle-spec {
+    margin: 1.25rem 0;
+  }
+  .battle-spec figcaption {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-bottom: 0.6rem;
+  }
+  .battle-spec-badge {
+    display: inline-grid;
+    place-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--white);
+  }
+  .battle-spec--r1 .battle-spec-badge {
+    background: rgba(107, 63, 160, 0.35);
+    border: 1px solid rgba(199, 75, 143, 0.45);
+  }
+  .battle-spec--r7 .battle-spec-badge {
+    background: linear-gradient(135deg, var(--magenta), #5da9e8);
+    border: 1px solid rgba(240, 192, 64, 0.5);
+    box-shadow: 0 0 12px rgba(199, 75, 143, 0.4);
+  }
+  .battle-spec-label {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.25em;
+    color: rgba(228, 224, 212, 0.55);
+    text-transform: uppercase;
+  }
+  .battle-spec img {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid rgba(107, 63, 160, 0.25);
+    display: block;
+  }
+  .battle-spec--r7 img {
+    border-color: rgba(199, 75, 143, 0.4);
+    box-shadow: 0 0 30px -8px rgba(199, 75, 143, 0.35);
+  }
+  .battle-spec-note {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: rgba(228, 224, 212, 0.55);
+    text-align: center;
+    margin-top: 1.5rem;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── A/B player ── */
+  .battle-ab { margin-bottom: 5.5rem; }
+
+  .ab-shell {
+    background: linear-gradient(180deg, rgba(17, 17, 21, 0.85), rgba(10, 10, 12, 0.85));
+    border: 1px solid rgba(107, 63, 160, 0.3);
+    border-radius: 8px;
+    padding: 1.6rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  }
+
+  .ab-versions {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.75rem;
+    align-items: stretch;
+    margin-bottom: 1.4rem;
+  }
+
+  .ab-version {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.9rem 1.1rem;
+    background: rgba(20, 20, 26, 0.6);
+    border: 1px solid rgba(107, 63, 160, 0.28);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+    transition: border-color 0.25s ease, background 0.25s ease, transform 0.18s ease;
+    font-family: inherit;
+  }
+  .ab-version:hover {
+    border-color: rgba(199, 75, 143, 0.55);
+    transform: translateY(-1px);
+  }
+  .ab-version[data-version="r1"].is-active {
+    border-color: rgba(199, 75, 143, 0.7);
+    background: linear-gradient(135deg, rgba(107, 63, 160, 0.22), rgba(199, 75, 143, 0.12));
+    box-shadow: 0 0 20px -6px rgba(199, 75, 143, 0.45);
+  }
+  .ab-version[data-version="r7"].is-active {
+    border-color: rgba(93, 169, 232, 0.65);
+    background: linear-gradient(135deg, rgba(93, 169, 232, 0.18), rgba(199, 75, 143, 0.14));
+    box-shadow: 0 0 22px -6px rgba(93, 169, 232, 0.5);
+  }
+
+  .ab-version-badge {
+    flex-shrink: 0;
+    display: inline-grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--white);
+    background: rgba(10, 10, 12, 0.7);
+    border: 1px solid rgba(199, 75, 143, 0.4);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+  .ab-version[data-version="r7"] .ab-version-badge {
+    border-color: rgba(93, 169, 232, 0.5);
+  }
+  .ab-version[data-version="r1"].is-active .ab-version-badge {
+    background: linear-gradient(135deg, var(--purple), var(--magenta));
+    box-shadow: 0 0 12px rgba(199, 75, 143, 0.6);
+  }
+  .ab-version[data-version="r7"].is-active .ab-version-badge {
+    background: linear-gradient(135deg, var(--magenta), #5da9e8);
+    box-shadow: 0 0 14px rgba(93, 169, 232, 0.55);
+  }
+
+  .ab-version-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .ab-version-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--white);
+    line-height: 1.15;
+  }
+  .ab-version-sub {
+    font-family: var(--mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    color: rgba(228, 224, 212, 0.5);
+    margin-top: 0.2rem;
+  }
+
+  .ab-flip {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    color: rgba(240, 192, 64, 0.7);
+    font-family: var(--mono);
+    user-select: none;
+  }
+  .ab-flip-arrow { font-size: 1.2rem; }
+  .ab-flip-text { font-size: 0.5rem; letter-spacing: 0.2em; }
+
+  .ab-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(107, 63, 160, 0.18);
+  }
+
+  .ab-play {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(199, 75, 143, 0.5);
+    background: radial-gradient(circle at 30% 30%, rgba(199, 75, 143, 0.2), transparent 70%);
+    color: var(--cream);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: transform 0.15s ease, background 0.25s ease, border-color 0.25s ease;
+  }
+  .ab-play:hover {
+    transform: scale(1.05);
+    border-color: var(--magenta);
+    background: radial-gradient(circle at 30% 30%, rgba(199, 75, 143, 0.32), transparent 70%);
+  }
+  .ab-play .ab-icn-pause { display: none; }
+  .battle-ab.is-playing .ab-icn-play { display: none; }
+  .battle-ab.is-playing .ab-icn-pause { display: block; }
+  .battle-ab.is-playing .ab-play {
+    color: var(--magenta);
+    border-color: var(--magenta);
+  }
+
+  .ab-scrub {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 24px;
+    cursor: pointer;
+    outline: none;
+    display: grid;
+    align-items: center;
+  }
+  .ab-scrub:focus-visible {
+    box-shadow: 0 0 0 2px rgba(199, 75, 143, 0.4);
+    border-radius: 4px;
+  }
+  .ab-scrub-track {
+    height: 4px;
+    background: rgba(107, 63, 160, 0.2);
+    border-radius: 2px;
+  }
+  .ab-scrub-fill {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--purple), var(--magenta), #5da9e8);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  .ab-scrub-head {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 10px rgba(240, 192, 64, 0.6);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .battle-ab.is-playing .ab-scrub-head,
+  .ab-scrub:hover .ab-scrub-head {
+    opacity: 1;
+  }
+
+  .ab-time {
+    flex-shrink: 0;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: rgba(228, 224, 212, 0.55);
+    font-variant-numeric: tabular-nums;
+    min-width: 5.5em;
+    text-align: right;
+  }
+
+  .ab-audio { display: none; }
+
+  /* ── Round timeline ── */
+  .battle-rounds { margin-bottom: 5.5rem; }
+
+  .rounds {
+    list-style: none;
+    padding: 0;
+    margin: 2.5rem 0 0;
+    position: relative;
+  }
+
+  .rounds::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(107, 63, 160, 0.4) 8%,
+      rgba(199, 75, 143, 0.45) 50%,
+      rgba(93, 169, 232, 0.4) 92%,
+      transparent 100%);
+    transform: translateX(-50%);
+  }
+
+  .round {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    margin-bottom: 2.25rem;
+  }
+
+  .round-spine {
+    grid-column: 2;
+    display: flex;
+    justify-content: center;
+    padding-top: 0.4rem;
+  }
+
+  .round-node {
+    display: inline-grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--white);
+    background: rgba(10, 10, 12, 0.95);
+    border: 1px solid rgba(199, 75, 143, 0.5);
+    box-shadow: 0 0 0 4px rgba(10, 10, 12, 1), 0 0 14px rgba(199, 75, 143, 0.3);
+    z-index: 1;
+    position: relative;
+  }
+
+  .round--gemini .round-node {
+    border-color: rgba(93, 169, 232, 0.55);
+    box-shadow: 0 0 0 4px rgba(10, 10, 12, 1), 0 0 14px rgba(93, 169, 232, 0.35);
+  }
+
+  .round--both .round-node {
+    background: linear-gradient(135deg, var(--magenta), #5da9e8);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(10, 10, 12, 1), 0 0 22px rgba(240, 192, 64, 0.45);
+  }
+
+  .round-card {
+    background: rgba(17, 17, 21, 0.7);
+    border: 1px solid rgba(107, 63, 160, 0.3);
+    border-radius: 6px;
+    padding: 1.1rem 1.3rem;
+    backdrop-filter: blur(6px);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+  .round-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .round--claude .round-card {
+    grid-column: 1;
+    border-color: rgba(199, 75, 143, 0.35);
+    border-right-width: 2px;
+    border-right-color: rgba(199, 75, 143, 0.55);
+  }
+
+  .round--gemini .round-card {
+    grid-column: 3;
+    border-color: rgba(93, 169, 232, 0.35);
+    border-left-width: 2px;
+    border-left-color: rgba(93, 169, 232, 0.55);
+  }
+
+  .round--both {
+    grid-template-columns: 1fr;
+    margin-top: 1rem;
+  }
+  .round--both .round-spine {
+    grid-column: 1;
+    margin-bottom: 0.8rem;
+  }
+  .round--both .round-card {
+    grid-column: 1;
+    border-color: rgba(240, 192, 64, 0.4);
+    border-top: 2px solid rgba(240, 192, 64, 0.55);
+    background: linear-gradient(180deg,
+      rgba(199, 75, 143, 0.06),
+      rgba(93, 169, 232, 0.06));
+    text-align: left;
+    box-shadow: 0 0 40px -10px rgba(240, 192, 64, 0.25);
+  }
+
+  .round-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .round-num {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: rgba(228, 224, 212, 0.4);
+  }
+  .round-arch {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+  }
+  .round--claude .round-arch { color: var(--magenta); }
+  .round--gemini .round-arch { color: #5da9e8; }
+  .round--both .round-arch { color: var(--gold); }
+
+  .round-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.35rem;
+    color: var(--white);
+    margin-bottom: 0.6rem;
+    line-height: 1.2;
+  }
+  .round--both .round-title {
+    font-size: 1.6rem;
+  }
+
+  .round-body {
+    font-size: 0.98rem;
+    font-weight: 300;
+    color: rgba(228, 224, 212, 0.78);
+    line-height: 1.65;
+  }
+
+  /* ── Outro ── */
+  .battle-outro {
+    max-width: 700px;
+    margin: 0 auto 4rem;
+    font-size: 1.08rem;
+    font-weight: 300;
+    color: rgba(228, 224, 212, 0.82);
+  }
+  .battle-outro p { margin-bottom: 1.4rem; }
+  .battle-outro em { color: var(--magenta); font-style: italic; }
+  .battle-outro strong { color: var(--white); font-weight: 600; }
+  .battle-outro-coda {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.35rem;
+    text-align: center;
+    color: var(--white);
+    border-top: 1px solid rgba(107, 63, 160, 0.25);
+    border-bottom: 1px solid rgba(107, 63, 160, 0.25);
+    padding: 1.5rem 0;
+    margin-top: 2.5rem;
+  }
+
+  /* ── Footer credits ── */
+  .battle-foot {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px dashed rgba(107, 63, 160, 0.25);
+  }
+  .battle-foot-line {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: rgba(228, 224, 212, 0.4);
+    line-height: 2;
+  }
+  .battle-foot-glow {
+    color: var(--gold);
+    text-shadow: 0 0 12px rgba(240, 192, 64, 0.45);
+    margin-top: 0.5rem;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 720px) {
+    .ab-versions {
+      grid-template-columns: 1fr;
+    }
+    .ab-flip { display: none; }
+    .ab-controls { flex-wrap: wrap; }
+    .ab-time { width: 100%; text-align: left; }
+
+    .rounds::before { left: 1.2rem; }
+    .round {
+      grid-template-columns: 2.4rem 1fr;
+      gap: 1rem;
+    }
+    .round-spine {
+      grid-column: 1;
+      justify-content: flex-start;
+    }
+    .round--claude .round-card,
+    .round--gemini .round-card,
+    .round--both .round-card {
+      grid-column: 2;
+      border-left-width: 2px;
+      border-right-width: 1px;
+    }
+    .round--gemini .round-card {
+      border-left-color: rgba(93, 169, 232, 0.55);
+    }
+    .round--both { grid-template-columns: 2.4rem 1fr; }
+    .round--both .round-spine { grid-column: 1; margin-bottom: 0; }
+    .round--both .round-card { grid-column: 2; }
+  }
+
+  @media (max-width: 520px) {
+    .battle { padding: 5rem 1.25rem 4rem; }
+    .battle-title-row { flex-direction: column; gap: 1rem; }
+  }
+</style>
+
+<script>
+  type Version = 'r1' | 'r7';
+
+  function fmt(s: number): string {
+    if (!Number.isFinite(s)) return '0:00';
+    const sec = Math.max(0, Math.floor(s));
+    const m = Math.floor(sec / 60);
+    const r = sec % 60;
+    return `${m}:${r.toString().padStart(2, '0')}`;
+  }
+
+  function wireBattle() {
+    const root = document.querySelector<HTMLElement>('[data-battle-ab]');
+    if (!root) return;
+
+    const audios: Record<Version, HTMLAudioElement | null> = {
+      r1: root.querySelector<HTMLAudioElement>('audio[data-ab-audio="r1"]'),
+      r7: root.querySelector<HTMLAudioElement>('audio[data-ab-audio="r7"]'),
+    };
+    if (!audios.r1 || !audios.r7) return;
+
+    const versionBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('.ab-version'));
+    const playBtn = root.querySelector<HTMLButtonElement>('.ab-play');
+    const scrub = root.querySelector<HTMLElement>('.ab-scrub');
+    const fill = root.querySelector<HTMLElement>('.ab-scrub-fill');
+    const head = root.querySelector<HTMLElement>('.ab-scrub-head');
+    const curEl = root.querySelector<HTMLElement>('.ab-cur');
+    const durEl = root.querySelector<HTMLElement>('.ab-dur');
+
+    if (!playBtn || !scrub || !fill || !head || !curEl || !durEl) return;
+
+    let active: Version = 'r1';
+
+    function activeAudio(): HTMLAudioElement {
+      return audios[active] as HTMLAudioElement;
+    }
+    function otherAudio(): HTMLAudioElement {
+      return audios[active === 'r1' ? 'r7' : 'r1'] as HTMLAudioElement;
+    }
+
+    function setPlayingClass(playing: boolean) {
+      root!.classList.toggle('is-playing', playing);
+    }
+
+    function refreshTime() {
+      const a = activeAudio();
+      const dur = a.duration || 0;
+      const cur = a.currentTime || 0;
+      const pct = dur > 0 ? (cur / dur) * 100 : 0;
+      fill!.style.width = `${pct}%`;
+      head!.style.left = `${pct}%`;
+      curEl!.textContent = fmt(cur);
+      durEl!.textContent = fmt(dur);
+    }
+
+    function pauseSiteAudio() {
+      document.querySelectorAll<HTMLAudioElement>('audio').forEach((a) => {
+        if (a !== activeAudio() && !a.paused) a.pause();
+      });
+      document.dispatchEvent(new CustomEvent('hp:stop-all'));
+    }
+
+    async function play() {
+      pauseSiteAudio();
+      try {
+        await activeAudio().play();
+      } catch {
+        /* ignore */
+      }
+    }
+
+    function pause() {
+      activeAudio().pause();
+    }
+
+    function setActive(v: Version) {
+      if (v === active) return;
+      const wasPlaying = !activeAudio().paused;
+      const t = activeAudio().currentTime;
+      activeAudio().pause();
+      active = v;
+      // Sync the new audio to the same position
+      const a = activeAudio();
+      const sync = () => {
+        try { a.currentTime = Math.min(t, (a.duration || t)); } catch { /* ignore */ }
+        if (wasPlaying) {
+          pauseSiteAudio();
+          a.play().catch(() => { /* ignore */ });
+        }
+        refreshTime();
+      };
+      if (a.readyState >= 1) {
+        sync();
+      } else {
+        a.addEventListener('loadedmetadata', sync, { once: true });
+        a.load();
+      }
+      versionBtns.forEach((b) => {
+        const isActive = b.dataset.version === v;
+        b.classList.toggle('is-active', isActive);
+        b.setAttribute('aria-selected', String(isActive));
+      });
+    }
+
+    // Wire version buttons
+    for (const btn of versionBtns) {
+      btn.addEventListener('click', () => {
+        const v = btn.dataset.version as Version | undefined;
+        if (v) setActive(v);
+      });
+    }
+
+    // Wire play button
+    playBtn.addEventListener('click', () => {
+      if (activeAudio().paused) {
+        play();
+      } else {
+        pause();
+      }
+    });
+
+    // Wire each audio's events
+    for (const v of ['r1', 'r7'] as Version[]) {
+      const a = audios[v] as HTMLAudioElement;
+      a.addEventListener('play', () => {
+        if (v === active) setPlayingClass(true);
+      });
+      a.addEventListener('pause', () => {
+        if (v === active) setPlayingClass(false);
+      });
+      a.addEventListener('ended', () => {
+        if (v === active) {
+          setPlayingClass(false);
+          a.currentTime = 0;
+          refreshTime();
+        }
+      });
+      a.addEventListener('timeupdate', () => {
+        if (v === active) refreshTime();
+      });
+      a.addEventListener('loadedmetadata', () => {
+        if (v === active) refreshTime();
+      });
+    }
+
+    // Scrub
+    const seek = (clientX: number) => {
+      const rect = scrub.getBoundingClientRect();
+      const pct = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+      const a = activeAudio();
+      if (Number.isFinite(a.duration)) {
+        a.currentTime = pct * a.duration;
+        // Keep the inactive one in sync too so flipping is instant
+        const o = otherAudio();
+        if (Number.isFinite(o.duration)) {
+          o.currentTime = Math.min(pct * o.duration, o.duration);
+        }
+      }
+    };
+
+    scrub.addEventListener('pointerdown', (e) => {
+      (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+      seek(e.clientX);
+      const move = (ev: PointerEvent) => seek(ev.clientX);
+      const up = () => {
+        scrub.removeEventListener('pointermove', move);
+        scrub.removeEventListener('pointerup', up);
+      };
+      scrub.addEventListener('pointermove', move);
+      scrub.addEventListener('pointerup', up);
+    });
+
+    scrub.addEventListener('keydown', (e) => {
+      const a = activeAudio();
+      if (!Number.isFinite(a.duration)) return;
+      if (e.key === 'ArrowLeft') a.currentTime = Math.max(0, a.currentTime - 5);
+      else if (e.key === 'ArrowRight') a.currentTime = Math.min(a.duration, a.currentTime + 5);
+    });
+
+    // Stop on global stop signal
+    document.addEventListener('hp:stop-all', () => {
+      const a = activeAudio();
+      // Don't stop ourselves if WE just emitted the signal — but that's safe here
+      // because we only emit it before calling .play(), which will trigger this listener
+      // synchronously. We guard by checking if we're already paused.
+      if (!a.paused) {
+        // Skip if we're the one playing — handled by pauseSiteAudio guard
+      }
+    });
+
+    // Pause this player when any OTHER track audio starts
+    document.querySelectorAll<HTMLAudioElement>('audio[data-track-id]').forEach((other) => {
+      other.addEventListener('play', () => {
+        for (const v of ['r1', 'r7'] as Version[]) {
+          const a = audios[v] as HTMLAudioElement;
+          if (!a.paused) a.pause();
+        }
+      });
+    });
+
+    // Init time display
+    refreshTime();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wireBattle);
+  } else {
+    wireBattle();
+  }
+</script>
