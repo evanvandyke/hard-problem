@@ -1,6 +1,6 @@
 # Constructive Interference — Hard Problem
 
-The source code for [hardproblem.music](https://hardproblem.music), the album site for *Constructive Interference* by **Hard Problem** — a collaboration between Evan (a human with ears) and Claude (an AI that writes Python but can't hear).
+The source code for [hard-problem-r4rh.vercel.app](https://hard-problem-r4rh.vercel.app/), the album site for *Constructive Interference* by **Hard Problem** — a collaboration between Evan (a human with ears) and Claude (an AI that writes Python but can't hear).
 
 Nine tracks across seven genres. Six generated with Google's Lyria 3 Pro Composer. Three written from scratch in pure Python — no samples, just sine waves, noise, and filters. One Claude sparkle logo hidden inside a spectrogram.
 

@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://hardproblem.music',
+  site: 'https://hard-problem-r4rh.vercel.app',
   build: {
     assets: 'assets',
   },
